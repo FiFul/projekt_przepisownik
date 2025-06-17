@@ -3,8 +3,9 @@ from model.database import Database
 
 
 class RecipeController:
-    def __init__(self):
-        self.db = Database()
+
+    def __init__(self, db):
+        self.db = db
 
     def add_recipe(self, name, ingredients, instructions, tags, image_path=''):
         recipe = Recipe(name, ingredients, instructions, tags, image_path)

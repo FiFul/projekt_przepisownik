@@ -1,7 +1,7 @@
 import tkinter as tk
-from tkinter import simpledialog, messagebox
-from view.recipe_form import RecipeForm
+from view.recipe_list_view import RecipeListView
 from view.calendar_view import CalendarView
+from tkinter import simpledialog
 
 
 class MainWindow(tk.Frame):
@@ -12,9 +12,7 @@ class MainWindow(tk.Frame):
 
         tk.Label(self, text="Książka Przepisów", font=('Arial', 16)).pack(pady=10)
 
-        tk.Button(self, text="Dodaj przepis", command=self.open_add_recipe).pack(pady=5)
-        tk.Button(self, text="Edytuj przepis", command=self.edit_recipe).pack(pady=5)
-        tk.Button(self, text="Usuń przepis", command=self.delete_recipe).pack(pady=5)
+        tk.Button(self, text="Lista przepisów", command=self.open_recipe_list).pack(pady=5)
         tk.Button(self, text="Kalendarz gotowania", command=self.open_calendar).pack(pady=5)
         tk.Button(self, text="Filtruj po tagu", command=self.filter_by_tag).pack(pady=5)
 
@@ -22,25 +20,9 @@ class MainWindow(tk.Frame):
         self.result_box.pack(pady=10)
         self.refresh_recipes()
 
-    def open_add_recipe(self):
-        RecipeForm(self.master, self.recipe_controller)
-        self.refresh_recipes()
+    def open_recipe_list(self):
+        RecipeListView(self.master, self.recipe_controller, self.calendar_controller)
 
-    def edit_recipe(self):
-        name = simpledialog.askstring("Edytuj", "Podaj nazwę przepisu do edycji:")
-        if name:
-            recipes = [r for r in self.recipe_controller.get_recipes() if r.name == name]
-            if recipes:
-                RecipeForm(self.master, self.recipe_controller, edit_mode=True, recipe=recipes[0])
-                self.refresh_recipes()
-            else:
-                messagebox.showerror("Błąd", "Nie znaleziono przepisu")
-
-    def delete_recipe(self):
-        name = simpledialog.askstring("Usuń", "Podaj nazwę przepisu do usunięcia:")
-        if name:
-            self.recipe_controller.delete_recipe(name)
-            self.refresh_recipes()
 
     def open_calendar(self):
         CalendarView(self.master, self.calendar_controller)

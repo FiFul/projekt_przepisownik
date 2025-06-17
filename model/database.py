@@ -52,3 +52,8 @@ class Database:
             data = json.load(f)
             self.recipes = [Recipe.from_dict(r) for r in data]
 
+    def get_all_tags(self):
+        tags = set()
+        for recipe in self.recipes:
+            tags.update([t.strip() for t in recipe.tags])
+        return sorted(tags)

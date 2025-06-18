@@ -19,13 +19,13 @@ class RecipeForm(QWidget):
         layout.addWidget(QLabel("Składniki"))
         layout.addWidget(self.ingredients_input)
 
-        self.tags_input = QLineEdit()
-        layout.addWidget(QLabel("Tagi"))
-        layout.addWidget(self.tags_input)
-
         self.instructions_input = QTextEdit()
         layout.addWidget(QLabel("Instrukcje"))
         layout.addWidget(self.instructions_input)
+
+        self.tags_input = QLineEdit()
+        layout.addWidget(QLabel("Tagi"))
+        layout.addWidget(self.tags_input)
 
         save_button = QPushButton("Zapisz")
         save_button.clicked.connect(self.save_recipe)
@@ -53,9 +53,9 @@ class RecipeForm(QWidget):
 
         if self.editing:
             self.recipe_controller.update_recipe(
-                self.original_recipe, name, ingredients, tags, instructions
+                self.original_recipe, name, ingredients, instructions, tags
             )
         else:
-            self.recipe_controller.add_recipe(name, ingredients, tags, instructions)
+            self.recipe_controller.add_recipe(name, ingredients, instructions, tags)
 
         self.close()

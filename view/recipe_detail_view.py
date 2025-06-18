@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
 
 from view.calendar_dialog import CalendarDialog
+from view.recipe_form import RecipeForm
 
 
 class RecipeDetailView(QWidget):
@@ -39,8 +40,7 @@ class RecipeDetailView(QWidget):
         self.close()
 
     def edit_recipe(self):
-        from view.recipe_form import RecipeForm
-        self.recipe_controller.delete_recipe(self.recipe)
+        self.form = RecipeForm(self.recipe_controller, recipe=self.recipe)
         self.form.show()
         self.close()
 

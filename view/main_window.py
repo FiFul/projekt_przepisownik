@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget
 from view.recipe_list_view import RecipeListView
 from view.calendar_list_view import CalendarListView
+from view.stats_view import StatsView
 
 class MainWindow(QMainWindow):
     def __init__(self, recipe_controller, calendar_controller):
@@ -20,6 +21,10 @@ class MainWindow(QMainWindow):
         calendar_button.clicked.connect(self.open_calendar_list)
         layout.addWidget(calendar_button)
 
+        self.stats_button = QPushButton("Statystyki")
+        self.stats_button.clicked.connect(self.open_stats)
+        layout.addWidget(self.stats_button)
+
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
@@ -31,3 +36,7 @@ class MainWindow(QMainWindow):
     def open_calendar_list(self):
         self.calendar_list_view = CalendarListView(self.recipe_controller, self.calendar_controller)
         self.calendar_list_view.show()
+
+    def open_stats(self):
+        self.stats_view = StatsView(self.recipe_controller, self.calendar_controller)
+        self.stats_view.show()

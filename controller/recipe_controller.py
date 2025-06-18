@@ -1,26 +1,41 @@
-from model.recipe import Recipe
-from model.database import Database
-
-
 class RecipeController:
-
     def __init__(self, db):
         self.db = db
 
-    def add_recipe(self, name, ingredients, instructions, tags, image_path=''):
-        recipe = Recipe(name, ingredients, instructions, tags, image_path)
+    def get_recipes(self):
+        return self.db.get_all_recipes()
+
+    def get_recipe_by_title(self, name):
+        return self.db.get_recipe_by_title(name)
+
+    def add_recipe(self, name, ingredients, instructions, tags):
+        recipe = {
+            "name": name,
+            "ingredients": ingredients,
+            "instructions": instructions,
+            "tags": tags,
+            "image_path": ""  # lub obsłuż opcjonalnie
+        }
         self.db.add_recipe(recipe)
 
-    def update_recipe(self, old_name, name, ingredients, instructions, tags, image_path=''):
-        updated = Recipe(name, ingredients, instructions, tags, image_path)
-        self.db.update_recipe(old_name, updated)
+    def delete_recipe(self, recipe):
+        self.db.delete_recipe(recipe)
 
-    def delete_recipe(self, name):
-        self.db.delete_recipe(name)
+    def filter_recipes_by_tag(self, tag):
+        return self.db.filter_recipes_by_tag(tag)
 
-    def get_recipes(self):
-        return self.db.get_recipes()
+    def get_all_tags(self):
+        return list({tag for recipe in self.get_recipes() for tag in recipe["tags"]})
 
-    def get_recipes_by_tag(self, tag):
-        return self.db.get_recipes_by_tag(tag)
+    def get_all_ingredients(self):
+        return list({ing for recipe in self.get_recipes() for ing in recipe["ingredients"]})
 
+    def update_recipe(self, original_recipe, name, ingredients, tags, instructions):
+        updated = {
+            "name": name,
+            "ingredients": ingredients,
+            "tags": tags,
+            "instructions": instructions,
+            "image_path": original_recipe.get("image_path", "")
+        }
+        self.db.update_recipe(original_recipe, updated)

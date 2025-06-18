@@ -1,42 +1,33 @@
-import tkinter as tk
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget
 from view.recipe_list_view import RecipeListView
-from view.calendar_view import CalendarView
-from tkinter import simpledialog
+from view.calendar_list_view import CalendarListView
 
+class MainWindow(QMainWindow):
+    def __init__(self, recipe_controller, calendar_controller):
+        super().__init__()
+        self.setWindowTitle("Przepisownik")
 
-class MainWindow(tk.Frame):
-    def __init__(self, parent, recipe_controller, calendar_controller):
-        super().__init__(parent)
         self.recipe_controller = recipe_controller
         self.calendar_controller = calendar_controller
 
-        tk.Label(self, text="Książka Przepisów", font=('Arial', 16)).pack(pady=10)
+        layout = QVBoxLayout()
 
-        tk.Button(self, text="Lista przepisów", command=self.open_recipe_list).pack(pady=5)
-        tk.Button(self, text="Kalendarz gotowania", command=self.open_calendar).pack(pady=5)
-        tk.Button(self, text="Filtruj po tagu", command=self.filter_by_tag).pack(pady=5)
+        self.open_recipe_list_button = QPushButton("Przepisy")
+        self.open_recipe_list_button.clicked.connect(self.open_recipe_list)
+        layout.addWidget(self.open_recipe_list_button)
 
-        self.result_box = tk.Text(self, height=15, width=60)
-        self.result_box.pack(pady=10)
-        self.refresh_recipes()
+        calendar_button = QPushButton("Kalendarz gotowania")
+        calendar_button.clicked.connect(self.open_calendar_list)
+        layout.addWidget(calendar_button)
+
+        container = QWidget()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
 
     def open_recipe_list(self):
-        RecipeListView(self.master, self.recipe_controller, self.calendar_controller)
+        self.recipe_list_view = RecipeListView(self.recipe_controller, self.calendar_controller)
+        self.recipe_list_view.show()
 
-
-    def open_calendar(self):
-        CalendarView(self.master, self.calendar_controller)
-
-    def filter_by_tag(self):
-        tag = simpledialog.askstring("Filtruj", "Podaj tag do filtrowania:")
-        if tag:
-            recipes = self.recipe_controller.get_recipes_by_tag(tag)
-            self.display_recipes(recipes)
-
-    def refresh_recipes(self):
-        self.display_recipes(self.recipe_controller.get_recipes())
-
-    def display_recipes(self, recipes):
-        self.result_box.delete('1.0', tk.END)
-        for r in recipes:
-            self.result_box.insert(tk.END, f"{r.name} | Tagi: {', '.join(r.tags)}\n")
+    def open_calendar_list(self):
+        self.calendar_list_view = CalendarListView(self.recipe_controller, self.calendar_controller)
+        self.calendar_list_view.show()

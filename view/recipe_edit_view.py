@@ -1,47 +1,53 @@
-import tkinter as tk
+from PyQt5.QtWidgets import (
+    QWidget, QLabel, QLineEdit, QTextEdit, QPushButton,
+    QVBoxLayout, QHBoxLayout, QMessageBox
+)
 
-class RecipeEditView(tk.Toplevel):
-    def __init__(self, recipe_controller, recipe=None, on_save=None):
+class RecipeEditView(QWidget):
+    def __init__(self, recipe_controller):
         super().__init__()
-        self.title("Edytuj przepis" if recipe else "Nowy przepis")
         self.recipe_controller = recipe_controller
-        self.recipe = recipe
-        self.on_save = on_save
+        self.setWindowTitle("Dodaj przepis")
 
-        # Pola formularza
-        self.title_entry = tk.Entry(self)
-        self.title_entry.insert(0, recipe.title if recipe else "")
-        self.title_entry.pack(pady=5)
+        layout = QVBoxLayout()
 
-        self.ingredients_text = tk.Text(self, height=5, width=40)
-        if recipe:
-            self.ingredients_text.insert("1.0", "\n".join(recipe.ingredients))
-        self.ingredients_text.pack(pady=5)
+        # Tytuł
+        layout.addWidget(QLabel("Tytuł:"))
+        self.title_entry = QLineEdit()
+        layout.addWidget(self.title_entry)
 
-        self.instructions_text = tk.Text(self, height=5, width=40)
-        if recipe:
-            self.instructions_text.insert("1.0", "\n".join(recipe.instructions))
-        self.instructions_text.pack(pady=5)
+        # Składniki
+        layout.addWidget(QLabel("Składniki (oddzielone przecinkami):"))
+        self.ingredients_text = QTextEdit()
+        layout.addWidget(self.ingredients_text)
 
-        self.tags_entry = tk.Entry(self)
-        if recipe:
-            self.tags_entry.insert(0, ", ".join(recipe.tags))
-        self.tags_entry.pack(pady=5)
+        # Instrukcje
+        layout.addWidget(QLabel("Instrukcje:"))
+        self.instructions_text = QTextEdit()
+        layout.addWidget(self.instructions_text)
 
-        save_button = tk.Button(self, text="Zapisz", command=self.save)
-        save_button.pack(pady=5)
+        # Tagi
+        layout.addWidget(QLabel("Tagi (oddzielone przecinkami):"))
+        self.tags_entry = QLineEdit()
+        layout.addWidget(self.tags_entry)
+
+        # Przycisk zapisu
+        save_button = QPushButton("Zapisz")
+        save_button.clicked.connect(self.save)
+        layout.addWidget(save_button)
+
+        self.setLayout(layout)
 
     def save(self):
-        title = self.title_entry.get()
-        ingredients = self.ingredients_text.get("1.0", tk.END).strip().split("\n")
-        instructions = self.instructions_text.get("1.0", "end").strip()
-        tags = [tag.strip() for tag in self.tags_entry.get().split(",") if tag.strip()]
+        title = self.title_entry.text()
+        ingredients = [i.strip() for i in self.ingredients_text.toPlainText().strip().split(",")]
+        instructions = self.instructions_text.toPlainText().strip()
+        tags = [t.strip() for t in self.tags_entry.text().strip().split(",")]
 
-        if self.recipe:
-            self.recipe_controller.update_recipe(self.recipe.id, title, ingredients, tags)
-        else:
+
+        try:
             self.recipe_controller.add_recipe(title, ingredients, instructions, tags)
-
-        if self.on_save:
-            self.on_save()
-        self.destroy()
+            QMessageBox.information(self, "Sukces", "Przepis zapisany.")
+            self.close()
+        except Exception as e:
+            QMessageBox.critical(self, "Błąd", str(e))

@@ -1,84 +1,100 @@
-import tkinter as tk
-from tkinter import ttk
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QComboBox, QLabel, QHBoxLayout
 from view.recipe_detail_view import RecipeDetailView
-from view.recipe_edit_view import RecipeEditView
+from view.recipe_form import RecipeForm
 
-
-class RecipeListView(tk.Toplevel):
-    def __init__(self, master, recipe_controller, calendar_controller):
-        super().__init__(master)
-        self.title("Lista przepisów")
+class RecipeListView(QWidget):
+    def __init__(self, recipe_controller, calendar_controller):
+        super().__init__()
+        self.setWindowTitle("Lista Przepisów")
 
         self.recipe_controller = recipe_controller
         self.calendar_controller = calendar_controller
 
-        # Przycisk dodawania nowego przepisu
-        add_button = tk.Button(self, text="Dodaj przepis", command=self.add_recipe)
-        add_button.pack(side='top', pady=5)
+        layout = QVBoxLayout()
 
-        # Dropdown do wyboru rodzaju filtru: tag lub składnik
-        self.filter_option = tk.StringVar(value="tag")
-        filter_type_menu = tk.OptionMenu(
-            self, self.filter_option, "tag", "ingredient",
-            command=lambda _: self.update_filter_options()
-        )
-        filter_type_menu.pack(side='top', padx=5, pady=2)
+        self.add_button = QPushButton("Dodaj przepis")
+        self.add_button.clicked.connect(self.add_recipe)
+        layout.addWidget(self.add_button)
 
-        # Dropdown z dynamicznie uzupełnianą listą tagów/składników
-        self.filter_var = tk.StringVar()
-        self.filter_dropdown = ttk.Combobox(self, textvariable=self.filter_var)
-        self.filter_dropdown.pack(side='top', padx=5, pady=2)
+        self.tag_filter_label = QLabel("Filtruj po tagu:")
+        layout.addWidget(self.tag_filter_label)
 
-        # Przycisk do zastosowania filtra
-        filter_button = tk.Button(self, text="Filtruj", command=self.apply_filter)
-        filter_button.pack(side='top', pady=5)
+        self.tag_filter_box = QComboBox()
+        layout.addWidget(self.tag_filter_box)
 
-        # Lista przepisów
-        self.recipe_listbox = tk.Listbox(self, width=50)
-        self.recipe_listbox.pack(padx=10, pady=10)
-        self.recipe_listbox.bind("<Double-Button-1>", self.open_selected_recipe)
+        self.ingredient_filter_label = QLabel("Filtruj po składniku:")
+        layout.addWidget(self.ingredient_filter_label)
 
-        # Załaduj wszystkie przepisy na start
+        self.ingredient_filter_box = QComboBox()
+        layout.addWidget(self.ingredient_filter_box)
+
+        button_layout = QHBoxLayout()
+
+        self.filter_button = QPushButton("Filtruj")
+        self.filter_button.clicked.connect(self.apply_filters)
+        button_layout.addWidget(self.filter_button)
+
+        self.clear_button = QPushButton("Wyczyść")
+        self.clear_button.clicked.connect(self.clear_filters)
+        button_layout.addWidget(self.clear_button)
+
+        layout.addLayout(button_layout)
+
+        self.recipe_list = QListWidget()
+        self.recipe_list.itemDoubleClicked.connect(self.open_selected_recipe)
+        layout.addWidget(self.recipe_list)
+
+        self.setLayout(layout)
+
         self.update_filter_options()
         self.display_recipes(self.recipe_controller.get_recipes())
-
-    def add_recipe(self):
-        RecipeEditView(self.recipe_controller, on_save=self.refresh_recipes)
-
-    def open_selected_recipe(self, event):
-        selection = self.recipe_listbox.curselection()
-        if selection:
-            index = selection[0]
-            recipe = self.recipes_to_display[index]
-            RecipeDetailView(self, self.recipe_controller, recipe)#,on_update=self.refresh_recipes)
-
-    def display_recipes(self, recipes):
-        self.recipes_to_display = recipes
-        self.recipe_listbox.delete(0, tk.END)
-        for recipe in recipes:
-            self.recipe_listbox.insert(tk.END, recipe.name)
 
     def update_filter_options(self):
-        if self.filter_option.get() == "tag":
-            options = self.recipe_controller.db.get_all_tags()
-        else:
-            options = self.recipe_controller.db.get_all_ingredients()
-        self.filter_dropdown['values'] = options
+        self.tag_filter_box.clear()
+        self.ingredient_filter_box.clear()
 
-    def apply_filter(self):
-        value = self.filter_var.get()
-        if not value:
-            return
+        tags = self.recipe_controller.get_all_tags()
+        ingredients = self.recipe_controller.get_all_ingredients()
 
-        if self.filter_option.get() == "tag":
-            filtered = self.recipe_controller.get_recipes_by_tag(value)
-        else:
-            filtered = [
-                r for r in self.recipe_controller.get_recipes()
-                if value.lower() in [i.lower() for i in r.ingredients]
-            ]
-        self.display_recipes(filtered)
+        self.tag_filter_box.addItem("")  # Opcja 'brak filtru'
+        self.ingredient_filter_box.addItem("")
 
-    def refresh_recipes(self):
+        self.tag_filter_box.addItems(sorted(tags))
+        self.ingredient_filter_box.addItems(sorted(ingredients))
+
+    def apply_filters(self):
+        selected_tag = self.tag_filter_box.currentText()
+        selected_ingredient = self.ingredient_filter_box.currentText()
+
+        recipes = self.recipe_controller.get_recipes()
+
+        if selected_tag:
+            recipes = [r for r in recipes if selected_tag in r["tags"]]
+
+        if selected_ingredient:
+            recipes = [r for r in recipes if selected_ingredient in r["ingredients"]]
+
+        self.display_recipes(recipes)
+
+    def clear_filters(self):
+        # Resetujemy wartości w comboBoxach do pustej (brak filtru)
+        self.tag_filter_box.setCurrentIndex(0)
+        self.ingredient_filter_box.setCurrentIndex(0)
+
+        # Pokaż wszystkie przepisy bez filtrów
         self.display_recipes(self.recipe_controller.get_recipes())
-        self.update_filter_options()
+
+    def display_recipes(self, recipes):
+        self.recipe_list.clear()
+        for recipe in recipes:
+            self.recipe_list.addItem(recipe["name"])
+
+    def open_selected_recipe(self, item):
+        recipe = self.recipe_controller.get_recipe_by_title(item.text())
+        self.detail_view = RecipeDetailView(recipe, self.recipe_controller, self.calendar_controller)
+        self.detail_view.show()
+
+    def add_recipe(self):
+        self.recipe_form = RecipeForm(self.recipe_controller)
+        self.recipe_form.show()
+

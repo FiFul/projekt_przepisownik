@@ -1,48 +1,49 @@
-import tkinter as tk
-from tkinter import messagebox
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
 
-from controller.recipe_controller import RecipeController
-from model.recipe import Recipe
-from view.recipe_form import RecipeForm
+from view.calendar_dialog import CalendarDialog
 
 
-class RecipeDetailView(tk.Toplevel):
-    def __init__(self, parent, controller: RecipeController, recipe: Recipe, refresh_callback=None):
-        super().__init__(parent)
-        self.controller = controller
+class RecipeDetailView(QWidget):
+    def __init__(self, recipe, recipe_controller, calendar_controller):
+        super().__init__()
+        self.setWindowTitle("Szczegóły Przepisu")
+
         self.recipe = recipe
-        #self.refresh_callback = refresh_callback
-        self.refresh_callback = parent.refresh_recipes
+        self.recipe_controller = recipe_controller
+        self.calendar_controller = calendar_controller
 
-        self.title(f"Szczegóły: {recipe.name}")
-        self.geometry("500x500")
+        layout = QVBoxLayout()
 
-        tk.Label(self, text=recipe.name, font=("Arial", 16)).pack(pady=5)
+        layout.addWidget(QLabel(f"Tytuł: {recipe['name']}"))
+        layout.addWidget(QLabel(f"Składniki: {recipe['ingredients']}"))
+        layout.addWidget(QLabel(f"Instrukcje: {recipe['instructions']}"))
+        layout.addWidget(QLabel(f"Tagi: {recipe['tags']}"))
 
-        tk.Label(self, text="Składniki:", font=("Arial", 12, 'bold')).pack(anchor='w', padx=10)
-        tk.Label(self, text=", ".join(recipe.ingredients)).pack(anchor='w', padx=20)
 
-        tk.Label(self, text="Instrukcje:", font=("Arial", 12, 'bold')).pack(anchor='w', padx=10, pady=(10, 0))
-        tk.Label(self, text=recipe.instructions, wraplength=450, justify="left").pack(anchor='w', padx=20)
+        edit_button = QPushButton("Edytuj")
+        edit_button.clicked.connect(self.edit_recipe)
+        layout.addWidget(edit_button)
 
-        tk.Label(self, text=f"Tagi: {', '.join(recipe.tags)}").pack(anchor='w', padx=10, pady=(10, 0))
+        delete_button = QPushButton("Usuń")
+        delete_button.clicked.connect(self.delete_recipe)
+        layout.addWidget(delete_button)
 
-        # Przyciski na dole
-        frame = tk.Frame(self)
-        frame.pack(side="bottom", pady=15)
-        tk.Button(frame, text="Edytuj", command=self.edit_recipe).pack(side='left', padx=5)
-        tk.Button(frame, text="Usuń", command=self.delete_recipe).pack(side='left', padx=5)
-        tk.Button(frame, text="Zamknij", command=self.destroy).pack(side='left', padx=5)
+        calendar_button = QPushButton("Wybierz dzień gotowania")
+        calendar_button.clicked.connect(self.open_calendar)
+        layout.addWidget(calendar_button)
 
-    def edit_recipe(self):
-        RecipeForm(self, self.controller, edit_mode=True, recipe=self.recipe)
-        if self.refresh_callback:
-            self.refresh_callback()
-        self.destroy()
+        self.setLayout(layout)
 
     def delete_recipe(self):
-        if messagebox.askyesno("Potwierdzenie", "Czy na pewno chcesz usunąć ten przepis?"):
-            self.controller.delete_recipe(self.recipe.name)
-            if self.refresh_callback:
-                self.refresh_callback()
-            self.destroy()
+        self.recipe_controller.delete_recipe(self.recipe)
+        self.close()
+
+    def edit_recipe(self):
+        from view.recipe_form import RecipeForm
+        self.recipe_controller.delete_recipe(self.recipe)
+        self.form.show()
+        self.close()
+
+    def open_calendar(self):
+        dialog = CalendarDialog(self, self.calendar_controller, self.recipe['name'])
+        dialog.exec_()

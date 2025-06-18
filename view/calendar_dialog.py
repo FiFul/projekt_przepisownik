@@ -1,0 +1,61 @@
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QDateEdit, QPushButton, QTextEdit, QMessageBox
+from PyQt5.QtCore import QDate
+from datetime import date
+
+class CalendarDialog(QDialog):
+    def __init__(self, parent, calendar_controller, recipe_name):
+        super().__init__(parent)
+        self.setWindowTitle("Zapisz gotowanie")
+        self.calendar_controller = calendar_controller
+        self.recipe_name = recipe_name
+
+        layout = QVBoxLayout()
+
+        layout.addWidget(QLabel(f"Zaznacz datę, kiedy przygotowałeś przepis: {recipe_name}"))
+
+        self.date_edit = QDateEdit()
+        self.date_edit.setCalendarPopup(True)
+        self.date_edit.setDate(QDate.currentDate())
+        layout.addWidget(self.date_edit)
+
+        save_button = QPushButton("Zapisz gotowanie")
+        save_button.clicked.connect(self.save_cook_date)
+        layout.addWidget(save_button)
+
+        clear_button = QPushButton("Wyczyść historię gotowania")
+        clear_button.clicked.connect(self.clear_cook_history)
+        layout.addWidget(clear_button)
+
+        layout.addWidget(QLabel("Historia gotowania:"))
+        self.history_box = QTextEdit()
+        self.history_box.setReadOnly(True)
+        layout.addWidget(self.history_box)
+
+        self.setLayout(layout)
+        self.update_history()
+
+    def save_cook_date(self):
+        qdate = self.date_edit.date()
+        cook_date = date(qdate.year(), qdate.month(), qdate.day())
+        self.calendar_controller.log_cook(self.recipe_name, cook_date)
+        self.update_history()
+
+    def clear_cook_history(self):
+        confirm = QMessageBox.question(
+            self,
+            "Potwierdzenie",
+            f"Czy na pewno chcesz usunąć całą historię gotowania dla przepisu „{self.recipe_name}”?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        if confirm == QMessageBox.Yes:
+            self.calendar_controller.clear_history(self.recipe_name)
+            self.update_history()
+
+    def update_history(self):
+        history = self.calendar_controller.get_history(self.recipe_name)
+        self.history_box.clear()
+        if history:
+            for entry in history:
+                self.history_box.append(f"{entry.cook_date}")
+        else:
+            self.history_box.setText("Brak historii gotowania.")

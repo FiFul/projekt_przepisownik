@@ -1,18 +1,21 @@
+from PyQt5.QtWidgets import QApplication
+import sys
+
 from controller.recipe_controller import RecipeController
 from controller.calendar_controller import CalendarController
 from model.database import Database
 from view.main_window import MainWindow
-import tkinter as tk
-
 
 def main():
-    root = tk.Tk()
+    app = QApplication(sys.argv)
+
     recipe_controller = RecipeController(Database())
     calendar_controller = CalendarController(recipe_controller.db)
-    app = MainWindow(root, recipe_controller, calendar_controller)
-    app.pack(fill='both', expand=True)
-    root.mainloop()
 
+    window = MainWindow(recipe_controller, calendar_controller)
+    window.show()
+
+    sys.exit(app.exec_())
 
 if __name__ == '__main__':
     main()

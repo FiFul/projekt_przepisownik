@@ -1,45 +1,61 @@
-import tkinter as tk
-from tkinter import simpledialog
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel
 
+class RecipeForm(QWidget):
+    def __init__(self, recipe_controller, recipe=None):
+        super().__init__()
+        self.setWindowTitle("Edytuj przepis" if recipe else "Nowy Przepis")
 
-class RecipeForm(simpledialog.Dialog):
-    def __init__(self, parent, controller, edit_mode=False, recipe=None):
-        self.controller = controller
-        self.edit_mode = edit_mode
-        self.recipe = recipe
-        super().__init__(parent, title="Edytuj przepis" if edit_mode else "Dodaj przepis")
+        self.recipe_controller = recipe_controller
+        self.editing = recipe is not None
+        self.original_recipe = recipe  # zapamiętaj oryginał
 
-    def body(self, master):
-        tk.Label(master, text="Nazwa:").grid(row=0)
-        tk.Label(master, text="Składniki (po przecinku):").grid(row=1)
-        tk.Label(master, text="Instrukcje:").grid(row=2)
-        tk.Label(master, text="Tagi (po przecinku):").grid(row=3)
+        layout = QVBoxLayout()
 
-        self.name = tk.Entry(master)
-        self.ingredients = tk.Entry(master)
-        self.instructions = tk.Entry(master)
-        self.tags = tk.Entry(master)
+        self.title_input = QLineEdit()
+        layout.addWidget(QLabel("Tytuł"))
+        layout.addWidget(self.title_input)
 
-        self.name.grid(row=0, column=1)
-        self.ingredients.grid(row=1, column=1)
-        self.instructions.grid(row=2, column=1)
-        self.tags.grid(row=3, column=1)
+        self.ingredients_input = QTextEdit()
+        layout.addWidget(QLabel("Składniki"))
+        layout.addWidget(self.ingredients_input)
 
-        if self.edit_mode and self.recipe:
-            self.name.insert(0, self.recipe.name)
-            self.ingredients.insert(0, ', '.join(self.recipe.ingredients))
-            self.instructions.insert(0, self.recipe.instructions)
-            self.tags.insert(0, ', '.join(self.recipe.tags))
+        self.tags_input = QLineEdit()
+        layout.addWidget(QLabel("Tagi"))
+        layout.addWidget(self.tags_input)
 
-        return self.name
+        self.instructions_input = QTextEdit()
+        layout.addWidget(QLabel("Instrukcje"))
+        layout.addWidget(self.instructions_input)
 
-    def apply(self):
-        name = self.name.get()
-        ingredients = self.ingredients.get().split(',')
-        instructions = self.instructions.get()
-        tags = self.tags.get().split(',')
+        save_button = QPushButton("Zapisz")
+        save_button.clicked.connect(self.save_recipe)
+        layout.addWidget(save_button)
 
-        if self.edit_mode and self.recipe:
-            self.controller.update_recipe(self.recipe.name, name, ingredients, instructions, tags)
+        self.setLayout(layout)
+
+        if recipe:
+            self.populate_fields(recipe)
+
+    def populate_fields(self, recipe):
+        self.title_input.setText(recipe["name"])
+        self.ingredients_input.setPlainText("\n".join(recipe["ingredients"]))
+        self.tags_input.setText(",".join(recipe["tags"]))
+        instructions = recipe["instructions"]
+        if isinstance(instructions, list):
+            instructions = "\n".join(instructions)
+        self.instructions_input.setPlainText(instructions)
+
+    def save_recipe(self):
+        name = self.title_input.text()
+        ingredients = self.ingredients_input.toPlainText().split('\n')
+        tags = [tag.strip() for tag in self.tags_input.text().split(',')]
+        instructions = self.instructions_input.toPlainText()
+
+        if self.editing:
+            self.recipe_controller.update_recipe(
+                self.original_recipe, name, ingredients, tags, instructions
+            )
         else:
-            self.controller.add_recipe(name, ingredients, instructions, tags)
+            self.recipe_controller.add_recipe(name, ingredients, tags, instructions)
+
+        self.close()

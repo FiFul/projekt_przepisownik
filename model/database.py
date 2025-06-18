@@ -7,53 +7,94 @@ import os
 
 
 class Database:
-    def __init__(self, filepath='recipes.json'):
-        self.filepath = filepath
-        self.recipes: List[Recipe] = []
-        self.history: List[CookHistory] = []
-        self.load_data()
+    def __init__(self, filename='recipes.json'):
+        self.filename = filename
+        self.recipes = []
+        self.load()
 
-    def add_recipe(self, recipe: Recipe):
+    def load(self):
+        try:
+            with open(self.filename, 'r', encoding='utf-8') as f:
+                self.recipes = json.load(f)
+        except FileNotFoundError:
+            self.recipes = []
+
+    def save(self):
+        with open(self.filename, 'w', encoding='utf-8') as f:
+            json.dump(self.recipes, f, ensure_ascii=False, indent=2)
+
+    def add_recipe(self, recipe):
         self.recipes.append(recipe)
-        self.save_data()
+        self.save()
 
-    def get_recipes(self) -> List[Recipe]:
+    def get_all_recipes(self):
         return self.recipes
 
-    def get_recipes_by_tag(self, tag: str) -> List[Recipe]:
-        return [r for r in self.recipes if tag in r.tags]
+    def get_recipe_by_title(self, name):
+        for recipe in self.recipes:
+            if recipe["name"] == name:
+                return recipe
+        return None
 
-    def update_recipe(self, old_name: str, updated_recipe: Recipe):
-        for i, r in enumerate(self.recipes):
-            if r.name == old_name:
-                self.recipes[i] = updated_recipe
-                break
-        self.save_data()
+    def delete_recipe(self, recipe):
+        self.recipes = [r for r in self.recipes if r['name'] != recipe['name']]
+        self.save()
 
-    def delete_recipe(self, name: str):
-        self.recipes = [r for r in self.recipes if r.name != name]
-        self.save_data()
-
-    def log_cook(self, recipe_name: str):
-        self.history.append(CookHistory(recipe_name, datetime.date.today()))
-
-    def get_cook_history(self, recipe_name: str) -> List[CookHistory]:
-        return [h for h in self.history if h.recipe_name == recipe_name]
-
-    def save_data(self):
-        data = [r.to_dict() for r in self.recipes]
-        with open(self.filepath, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-
-    def load_data(self):
-        if not os.path.exists(self.filepath):
-            return
-        with open(self.filepath, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            self.recipes = [Recipe.from_dict(r) for r in data]
+    def filter_recipes_by_tag(self, tag):
+        return [r for r in self.recipes if tag in r["tags"]]
 
     def get_all_tags(self):
         tags = set()
         for recipe in self.recipes:
-            tags.update([t.strip() for t in recipe.tags])
-        return sorted(tags)
+            tags.update(recipe.get("tags", []))
+        return list(tags)
+
+    def update_recipe(self, original, updated):
+        index = self.recipes.index(original)
+        self.recipes[index] = updated
+        self.save()
+
+    def log_cook_date(self, recipe_name, cook_date):
+        try:
+            with open("cook_history.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            data = []
+
+        # Dodajemy nowy wpis
+        data.append({
+            "recipe_name": recipe_name,
+            "cook_date": cook_date.isoformat()
+        })
+
+        with open("cook_history.json", "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+
+    def get_cook_history(self, recipe_name):
+        try:
+            with open("cook_history.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            return []
+
+        # Filtrujemy po nazwie przepisu i tworzymy obiekty CookHistory
+        from datetime import datetime
+        history = []
+        for entry in data:
+            if entry["recipe_name"] == recipe_name:
+                cook_date = datetime.fromisoformat(entry["cook_date"]).date()
+                history.append(CookHistory(recipe_name, cook_date))
+        return history
+
+    def clear_cook_history(self, recipe_name):
+        try:
+            with open("cook_history.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            data = []
+
+        # Filtrowanie historii bez wpisów dla danego przepisu
+        data = [entry for entry in data if entry["recipe_name"] != recipe_name]
+
+        with open("cook_history.json", "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)

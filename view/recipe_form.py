@@ -48,8 +48,9 @@ class RecipeForm(QWidget):
     def save_recipe(self):
         name = self.title_input.text()
         ingredients = self.ingredients_input.toPlainText().split('\n')
-        tags = [tag.strip() for tag in self.tags_input.text().split(',')]
         instructions = self.instructions_input.toPlainText()
+        tags = [tag.strip() for tag in self.tags_input.text().split(',')]
+
 
         if self.editing:
             self.recipe_controller.update_recipe(

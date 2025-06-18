@@ -36,6 +36,7 @@ class RecipeDetailView(QWidget):
         self.setLayout(layout)
 
     def delete_recipe(self):
+        self.recipe_controller.clear_cook_history(self.recipe['name'])
         self.recipe_controller.delete_recipe(self.recipe)
         self.close()
 

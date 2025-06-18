@@ -1,5 +1,7 @@
+from model.database import Database
+
 class RecipeController:
-    def __init__(self, db):
+    def __init__(self, db: Database):
         self.db = db
 
     def get_recipes(self):
@@ -30,12 +32,15 @@ class RecipeController:
     def get_all_ingredients(self):
         return list({ing for recipe in self.get_recipes() for ing in recipe["ingredients"]})
 
-    def update_recipe(self, original_recipe, name, ingredients, tags, instructions):
+    def update_recipe(self, original_recipe, name, ingredients, instructions, tags):
         updated = {
             "name": name,
             "ingredients": ingredients,
-            "tags": tags,
             "instructions": instructions,
+            "tags": tags,
             "image_path": original_recipe.get("image_path", "")
         }
         self.db.update_recipe(original_recipe, updated)
+
+    def clear_cook_history(self, recipe):
+        self.db.clear_cook_history(recipe)

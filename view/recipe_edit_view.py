@@ -18,6 +18,11 @@ class RecipeEditView(tk.Toplevel):
             self.ingredients_text.insert("1.0", "\n".join(recipe.ingredients))
         self.ingredients_text.pack(pady=5)
 
+        self.instructions_text = tk.Text(self, height=5, width=40)
+        if recipe:
+            self.instructions_text.insert("1.0", "\n".join(recipe.instructions))
+        self.instructions_text.pack(pady=5)
+
         self.tags_entry = tk.Entry(self)
         if recipe:
             self.tags_entry.insert(0, ", ".join(recipe.tags))
@@ -29,12 +34,13 @@ class RecipeEditView(tk.Toplevel):
     def save(self):
         title = self.title_entry.get()
         ingredients = self.ingredients_text.get("1.0", tk.END).strip().split("\n")
+        instructions = self.instructions_text.get("1.0", "end").strip()
         tags = [tag.strip() for tag in self.tags_entry.get().split(",") if tag.strip()]
 
         if self.recipe:
             self.recipe_controller.update_recipe(self.recipe.id, title, ingredients, tags)
         else:
-            self.recipe_controller.add_recipe(title, ingredients, tags)
+            self.recipe_controller.add_recipe(title, ingredients, instructions, tags)
 
         if self.on_save:
             self.on_save()

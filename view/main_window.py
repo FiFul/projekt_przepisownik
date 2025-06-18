@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QStackedWidget
 
+from view.calendar_dialog import CalendarDialog
 from view.calendar_list_view import CalendarListView
 from view.recipe_detail_view import RecipeDetailView
 from view.recipe_form import RecipeForm
@@ -37,7 +38,7 @@ class MainWindow(QMainWindow):
 
         # Prawy panel (dynamiczne widoki)
         self.stack = QStackedWidget()
-        self.recipe_list_view = RecipeListView(recipe_controller, self.calendar_controller)
+        self.recipe_list_view = RecipeListView(self,recipe_controller, self.calendar_controller)
         self.calendar_list_view = CalendarListView(recipe_controller, calendar_controller)
         self.stats_view = StatsView(recipe_controller, calendar_controller)
 
@@ -69,15 +70,25 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(self.stats_view)
 
     def show_recipe_detail(self, recipe):
-        detail_view = RecipeDetailView(recipe, self.recipe_controller, self.calendar_controller, self.show_recipes, self.show_edit_recipe)
+        detail_view = RecipeDetailView(self, self.recipe_list_view, recipe, self.recipe_controller, self.calendar_controller)
         self.stack.addWidget(detail_view)
         self.stack.setCurrentWidget(detail_view)
 
-    def show_edit_recipe(self, recipe=None):
-        form = RecipeForm(recipe, self.recipe_controller, self.show_recipes)
+    def show_edit_recipe(self, parent_widget, recipe):
+        form = RecipeForm(self, parent_widget, recipe, self.recipe_controller)
         self.stack.addWidget(form)
         self.stack.setCurrentWidget(form)
 
-    def show_add_recipe(self):
-        self.show_edit_recipe(None)
+    def show_add_recipe(self, parent_widget):
+        self.show_edit_recipe(parent_widget, None)
 
+    def show_calendar_dialog(self, parent_widget, recipe):
+        dialog = CalendarDialog(self, parent_widget, self.calendar_controller, recipe["name"])
+        self.stack.addWidget(dialog)
+        self.stack.setCurrentWidget(dialog)
+    def cleanup_views(self):
+        # Usuwa wszystkie widoki poza listą z widgetu stack
+        for i in reversed(range(self.stack.count() - 4)):
+            widget = self.stack.widget(i)
+            self.stack.removeWidget(widget)
+            widget.deleteLater()

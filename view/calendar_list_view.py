@@ -3,9 +3,10 @@ from PyQt5.QtCore import Qt
 from datetime import date
 
 class CalendarListView(QWidget):
-    def __init__(self, recipe_controller, calendar_controller):
+    def __init__(self, main_window, recipe_controller, calendar_controller):
         super().__init__()
         self.setWindowTitle("Kalendarz gotowania")
+        self.main_window = main_window
         self.recipe_controller = recipe_controller
         self.calendar_controller = calendar_controller
 
@@ -43,7 +44,13 @@ class CalendarListView(QWidget):
         recipe = next((r for r in self.recipe_controller.get_recipes() if r["name"] == text), None)
         if recipe:
             from view.recipe_detail_view import RecipeDetailView
-            self.detail_view = RecipeDetailView(recipe, self.recipe_controller, self.calendar_controller)
+            self.detail_view = RecipeDetailView(
+                self, # obecny widget jako parent_widget
+                self.main_window,  # referencja do MainWindow
+                recipe,
+                self.recipe_controller,
+                self.calendar_controller
+            )
             self.detail_view.show()
         else:
             QMessageBox.warning(self, "Błąd", "Nie znaleziono przepisu.")

@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         # Prawy panel (dynamiczne widoki)
         self.stack = QStackedWidget()
         self.recipe_list_view = RecipeListView(self,recipe_controller, self.calendar_controller)
-        self.calendar_list_view = CalendarListView(recipe_controller, calendar_controller)
+        self.calendar_list_view = CalendarListView(self, recipe_controller, calendar_controller)
         self.stats_view = StatsView(recipe_controller, calendar_controller)
 
         self.stack.addWidget(self.recipe_list_view)   # index 0
@@ -83,7 +83,7 @@ class MainWindow(QMainWindow):
         self.show_edit_recipe(parent_widget, None)
 
     def show_calendar_dialog(self, parent_widget, recipe):
-        dialog = CalendarDialog(self, parent_widget, self.calendar_controller, recipe["name"])
+        dialog = CalendarDialog(parent_widget, self.calendar_controller, recipe["name"])
         self.stack.addWidget(dialog)
         self.stack.setCurrentWidget(dialog)
     def cleanup_views(self):

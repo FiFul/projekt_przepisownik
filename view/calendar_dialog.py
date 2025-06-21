@@ -3,13 +3,19 @@ from PyQt5.QtCore import QDate
 from datetime import date
 
 class CalendarDialog(QDialog):
-    def __init__(self, parent, calendar_controller, recipe_name):
-        super().__init__(parent)
-        self.setWindowTitle("Zapisz gotowanie")
+    def __init__(self, main_window, parent_widget, calendar_controller, recipe_name):
+        super().__init__(parent_widget)
+        self.main_window = main_window
+        self.parent_widget = parent_widget
         self.calendar_controller = calendar_controller
         self.recipe_name = recipe_name
+        self.setWindowTitle(f"Kalendarz gotowania - {self.recipe_name}")
 
         layout = QVBoxLayout()
+
+        return_button = QPushButton("Powrót")
+        return_button.clicked.connect(self.close_view)
+        layout.addWidget(return_button)
 
         layout.addWidget(QLabel(f"Zaznacz datę, kiedy przygotowałeś przepis: {recipe_name}"))
 
@@ -59,3 +65,8 @@ class CalendarDialog(QDialog):
                 self.history_box.append(f"{entry.cook_date}")
         else:
             self.history_box.setText("Brak historii gotowania.")
+
+    def close_view(self):
+        self.main_window.stack.setCurrentWidget(self.parent_widget)
+        self.main_window.stack.currentWidget().refresh_view()
+        self.close()

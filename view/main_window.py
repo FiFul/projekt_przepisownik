@@ -83,7 +83,7 @@ class MainWindow(QMainWindow):
         self.show_edit_recipe(parent_widget, None)
 
     def show_calendar_dialog(self, parent_widget, recipe):
-        dialog = CalendarDialog(parent_widget, self.calendar_controller, recipe["name"])
+        dialog = CalendarDialog(self, parent_widget, self.calendar_controller, recipe["name"])
         self.stack.addWidget(dialog)
         self.stack.setCurrentWidget(dialog)
     def cleanup_views(self):

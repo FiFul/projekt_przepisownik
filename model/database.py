@@ -49,10 +49,6 @@ class Database:
             tags.update(recipe.get("tags", []))
         return list(tags)
 
-    def update_recipe(self, original, updated):
-        index = self.recipes.index(original)
-        self.recipes[index] = updated
-        self.save()
 
     def log_cook_date(self, recipe_name, cook_date):
         try:

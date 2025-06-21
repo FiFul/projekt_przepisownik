@@ -40,7 +40,10 @@ class RecipeController:
             "tags": tags,
             "image_path": original_recipe.get("image_path", "")
         }
-        self.db.update_recipe(original_recipe, updated)
+        original_recipe["name"] = updated["name"]
+        original_recipe["ingredients"] = updated["ingredients"]
+        original_recipe["instructions"] = updated["instructions"]
+        original_recipe["tags"] = updated["tags"]
 
     def clear_cook_history(self, recipe):
         self.db.clear_cook_history(recipe)

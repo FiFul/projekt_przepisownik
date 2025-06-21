@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel
 
 from controller.recipe_controller import RecipeController
+from view.recipe_detail_view import RecipeDetailView
 
 
 class RecipeForm(QWidget):
@@ -58,6 +59,8 @@ class RecipeForm(QWidget):
             RecipeController.instance().update_recipe(
                 self.original_recipe, name, ingredients, instructions, tags
             )
+            if type(self.parent_widget) is RecipeDetailView:
+                self.parent_widget.update_recipe(name, ingredients, instructions, tags)
         else:
             RecipeController.instance().add_recipe(name, ingredients, instructions, tags)
 

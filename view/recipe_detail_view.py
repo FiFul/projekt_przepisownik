@@ -48,7 +48,6 @@ class RecipeDetailView(QWidget):
         self.close_view()
 
     def edit_recipe(self):
-        from view.main_window import MainWindow
         self.main_window.show_edit_recipe(self, self.recipe)
 
     def open_calendar(self):
@@ -64,3 +63,9 @@ class RecipeDetailView(QWidget):
         self.ingredients_label.setText(f"Składniki: {', '.join(self.recipe['ingredients'])}")
         self.instructions_label.setText(f"Instrukcje: {self.recipe['instructions']}")
         self.tags_label.setText(f"Tagi: {', '.join(self.recipe['tags'])}")
+
+    def update_recipe(self, name, ingredients, instructions, tags):
+        self.recipe['name'] = name
+        self.recipe['ingredients'] = ingredients
+        self.recipe['instructions'] = instructions
+        self.recipe['tags'] = tags

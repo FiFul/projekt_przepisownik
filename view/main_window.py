@@ -56,14 +56,17 @@ class MainWindow(QMainWindow):
         self.show_recipes()
 
     def show_recipes(self):
+        self.recipe_list_view.refresh_view()
         self.recipe_list_view.display_recipes(Database.instance().recipes)
         self.stack.setCurrentWidget(self.recipe_list_view)
 
     def show_calendar(self):
+        self.recipe_list_view.refresh_view()
         self.calendar_list_view.display_recipes()
         self.stack.setCurrentWidget(self.calendar_list_view)
 
     def show_stats(self):
+        self.recipe_list_view.refresh_view()
         self.stats_view.update()
         self.stack.setCurrentWidget(self.stats_view)
 

@@ -35,6 +35,14 @@ class Database(SingletonClass):
                 return recipe
         return None
 
+    def update_recipe(self, recipe, name, ingredients, instructions, tags):
+        id = self.recipes.index(recipe)
+        self.recipes[id]["name"] = name
+        self.recipes[id]["ingredients"] = ingredients
+        self.recipes[id]["instructions"] = instructions
+        self.recipes[id]["tags"] = tags
+        self.save()
+
     def delete_recipe(self, recipe):
         self.recipes = [r for r in self.recipes if r['name'] != recipe['name']]
         self.save()

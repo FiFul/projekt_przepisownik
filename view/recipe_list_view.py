@@ -44,8 +44,7 @@ class RecipeListView(QWidget):
 
         self.setLayout(layout)
 
-        self.update_filter_options()
-        self.display_recipes(RecipeController.instance().get_recipes())
+        self.refresh_view()
 
     def update_filter_options(self):
         self.tag_filter_box.clear()
@@ -95,4 +94,5 @@ class RecipeListView(QWidget):
         self.main_window.show_add_recipe(self)
 
     def refresh_view(self):
+        self.update_filter_options()
         self.display_recipes(RecipeController.instance().get_recipes())

@@ -33,17 +33,7 @@ class RecipeController(SingletonClass):
         return list({ing for recipe in self.get_recipes() for ing in recipe["ingredients"]})
 
     def update_recipe(self, original_recipe, name, ingredients, instructions, tags):
-        updated = {
-            "name": name,
-            "ingredients": ingredients,
-            "instructions": instructions,
-            "tags": tags,
-            "image_path": original_recipe.get("image_path", "")
-        }
-        original_recipe["name"] = updated["name"]
-        original_recipe["ingredients"] = updated["ingredients"]
-        original_recipe["instructions"] = updated["instructions"]
-        original_recipe["tags"] = updated["tags"]
+        Database.instance().update_recipe(original_recipe, name, ingredients, instructions, tags)
 
     def clear_cook_history(self, recipe):
         Database.instance().clear_cook_history(recipe)

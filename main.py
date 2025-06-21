@@ -7,13 +7,15 @@ from controller.recipe_controller import RecipeController
 from model.database import Database
 
 def main():
+    #SINGLETONY
     database = Database.instance()
     calendar_controller = CalendarController.instance()
     recipe_controller = RecipeController.instance()
+
     app = QApplication(sys.argv)
 
     window = MainWindow()
-    window.show()
+    window.showFullScreen()
 
     sys.exit(app.exec_())
 

@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QComboBox, QLabel, QHBoxLayout
 
 from controller.recipe_controller import RecipeController
+from utils.style_manager import update_stylesheets
+
 
 class RecipeListView(QWidget):
     def __init__(self, main_window):
@@ -94,5 +96,6 @@ class RecipeListView(QWidget):
         self.main_window.show_add_recipe(self)
 
     def refresh_view(self):
+        update_stylesheets("recipes_section")
         self.update_filter_options()
         self.display_recipes(RecipeController.instance().get_recipes())

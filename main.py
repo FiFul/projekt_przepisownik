@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication
 import sys
 
-from utils.style_loader import load_stylesheets
+from utils.style_manager import update_stylesheets
 from view.main_window import MainWindow
 from controller.calendar_controller import CalendarController
 from controller.recipe_controller import RecipeController
@@ -14,9 +14,7 @@ def main():
     recipe_controller = RecipeController.instance()
 
     app = QApplication(sys.argv)
-
-    style = load_stylesheets()
-    app.setStyleSheet(style)
+    update_stylesheets()
 
     window = MainWindow()
     window.showFullScreen()

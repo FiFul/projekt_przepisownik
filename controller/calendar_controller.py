@@ -1,5 +1,5 @@
 from model.database import Database
-from model.singleton_class import SingletonClass
+from utils.singleton_class import SingletonClass
 
 class CalendarController(SingletonClass):
 

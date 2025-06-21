@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QApplication
+
+from utils.style_manager import update_stylesheets
 
 
 class HomepageView(QWidget):
@@ -8,6 +10,7 @@ class HomepageView(QWidget):
         self.setWindowTitle("Strona Główna")
 
         layout = QVBoxLayout()
+        self.refresh_view()
 
     def refresh_view(self):
-        pass
+        update_stylesheets("home_section")

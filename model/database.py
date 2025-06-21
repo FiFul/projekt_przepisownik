@@ -1,11 +1,11 @@
 from model.cook_history import CookHistory
 import json
 
-from model.singleton_class import SingletonClass
+from utils.singleton_class import SingletonClass
 
 
 class Database(SingletonClass):
-    def __init__(self, filename='recipes.json'):
+    def __init__(self, filename='data/recipes.json'):
         super().__init__()
         self.filename = filename
         self.recipes = []
@@ -59,7 +59,7 @@ class Database(SingletonClass):
 
     def log_cook_date(self, recipe_name, cook_date):
         try:
-            with open("cook_history.json", "r", encoding="utf-8") as f:
+            with open("data/cook_history.json", "r", encoding="utf-8") as f:
                 data = json.load(f)
         except FileNotFoundError:
             data = []
@@ -70,12 +70,12 @@ class Database(SingletonClass):
             "cook_date": cook_date.isoformat()
         })
 
-        with open("cook_history.json", "w", encoding="utf-8") as f:
+        with open("data/cook_history.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
     def get_cook_history(self, recipe_name):
         try:
-            with open("cook_history.json", "r", encoding="utf-8") as f:
+            with open("data/cook_history.json", "r", encoding="utf-8") as f:
                 data = json.load(f)
         except FileNotFoundError:
             return []
@@ -91,7 +91,7 @@ class Database(SingletonClass):
 
     def clear_cook_history(self, recipe_name):
         try:
-            with open("cook_history.json", "r", encoding="utf-8") as f:
+            with open("data/cook_history.json", "r", encoding="utf-8") as f:
                 data = json.load(f)
         except FileNotFoundError:
             data = []
@@ -99,5 +99,5 @@ class Database(SingletonClass):
         # Filtrowanie historii bez wpisów dla danego przepisu
         data = [entry for entry in data if entry["recipe_name"] != recipe_name]
 
-        with open("cook_history.json", "w", encoding="utf-8") as f:
+        with open("data/cook_history.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)

@@ -3,6 +3,7 @@ from datetime import date
 
 from controller.calendar_controller import CalendarController
 from controller.recipe_controller import RecipeController
+from utils.style_manager import update_stylesheets
 
 
 class CalendarListView(QWidget):
@@ -46,4 +47,5 @@ class CalendarListView(QWidget):
         self.main_window.show_recipe_detail(self, recipe)
 
     def refresh_view(self):
+        update_stylesheets("calendar_section")
         self.display_recipes()

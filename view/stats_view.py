@@ -3,6 +3,7 @@ from collections import Counter
 
 from controller.calendar_controller import CalendarController
 from controller.recipe_controller import RecipeController
+from utils.style_manager import update_stylesheets
 
 
 class StatsView(QWidget):
@@ -37,4 +38,5 @@ class StatsView(QWidget):
         self.setLayout(layout)
 
     def refresh_view(self):
+        update_stylesheets("statistics_section")
         self.update()

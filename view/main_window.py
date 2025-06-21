@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         self.menu.setSpacing(30)
 
         self.btn_home = MenuButton("icon_home", "Strona Główna")
-        self.btn_recipes = MenuButton("icon_recipe_list1", "Lista Przepisów")
+        self.btn_recipes = MenuButton("icon_recipe_list", "Lista Przepisów")
         self.btn_calendar = MenuButton("icon_calendar_list", "Kalendarz")
         self.btn_stats = MenuButton("icon_statistics", "Statystyki")
         self.btn_exit = MenuButton("icon_close", "Zamknij")

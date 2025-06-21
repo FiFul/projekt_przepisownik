@@ -14,6 +14,10 @@ def main():
 
     app = QApplication(sys.argv)
 
+    with open("assets/style.qss", "r") as file:
+        style = file.read()
+        app.setStyleSheet(style)
+
     window = MainWindow()
     window.showFullScreen()
 

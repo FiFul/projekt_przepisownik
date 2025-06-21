@@ -35,3 +35,6 @@ class StatsView(QWidget):
             layout.addWidget(QLabel("Brak tagów"))
 
         self.setLayout(layout)
+
+    def refresh_view(self):
+        self.update()

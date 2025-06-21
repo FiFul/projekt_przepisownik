@@ -1,14 +1,16 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel
 
+from controller.recipe_controller import RecipeController
+
+
 class RecipeForm(QWidget):
-    def __init__(self, main_window, parent_widget, recipe, recipe_controller):
+    def __init__(self, main_window, parent_widget, recipe):
         super().__init__()
         self.setWindowTitle("Edytuj przepis" if recipe else "Nowy Przepis")
         self.main_window = main_window
         self.parent_widget = parent_widget
-        self.recipe_controller = recipe_controller
         self.editing = recipe is not None
-        self.original_recipe = recipe  # zapamiętaj oryginał
+        self.original_recipe = recipe
 
         layout = QVBoxLayout()
 
@@ -53,11 +55,11 @@ class RecipeForm(QWidget):
         tags = [tag.strip() for tag in self.tags_input.text().split(',')]
 
         if self.editing:
-            self.recipe_controller.update_recipe(
+            RecipeController.instance().update_recipe(
                 self.original_recipe, name, ingredients, instructions, tags
             )
         else:
-            self.recipe_controller.add_recipe(name, ingredients, instructions, tags)
+            RecipeController.instance().add_recipe(name, ingredients, instructions, tags)
 
         self.close_view()
 

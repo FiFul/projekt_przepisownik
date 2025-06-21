@@ -2,12 +2,14 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QDateEdit, QPushButton
 from PyQt5.QtCore import QDate
 from datetime import date
 
+from controller.calendar_controller import CalendarController
+
+
 class CalendarDialog(QDialog):
-    def __init__(self, main_window, parent_widget, calendar_controller, recipe_name):
+    def __init__(self, main_window, parent_widget, recipe_name):
         super().__init__(parent_widget)
         self.main_window = main_window
         self.parent_widget = parent_widget
-        self.calendar_controller = calendar_controller
         self.recipe_name = recipe_name
         self.setWindowTitle(f"Kalendarz gotowania - {self.recipe_name}")
 
@@ -43,7 +45,7 @@ class CalendarDialog(QDialog):
     def save_cook_date(self):
         qdate = self.date_edit.date()
         cook_date = date(qdate.year(), qdate.month(), qdate.day())
-        self.calendar_controller.log_cook(self.recipe_name, cook_date)
+        CalendarController.instance().log_cook(self.recipe_name, cook_date)
         self.update_history()
 
     def clear_cook_history(self):
@@ -54,11 +56,11 @@ class CalendarDialog(QDialog):
             QMessageBox.Yes | QMessageBox.No
         )
         if confirm == QMessageBox.Yes:
-            self.calendar_controller.clear_history(self.recipe_name)
+            CalendarController.instance().clear_history(self.recipe_name)
             self.update_history()
 
     def update_history(self):
-        history = self.calendar_controller.get_history(self.recipe_name)
+        history = CalendarController.instance().get_history(self.recipe_name)
         self.history_box.clear()
         if history:
             for entry in history:

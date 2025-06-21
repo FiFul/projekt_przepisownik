@@ -1,15 +1,13 @@
 from model.database import Database
+from model.singleton_class import SingletonClass
 
-
-class CalendarController:
-    def __init__(self, db: Database):
-        self.db = db
+class CalendarController(SingletonClass):
 
     def log_cook(self, recipe_name: str, cook_date):
-        self.db.log_cook_date(recipe_name, cook_date)
+        Database.instance().log_cook_date(recipe_name, cook_date)
 
     def get_history(self, recipe_name: str):
-        return self.db.get_cook_history(recipe_name)
+        return Database.instance().get_cook_history(recipe_name)
 
     def clear_history(self, recipe_name: str):
-        self.db.clear_cook_history(recipe_name)
+        Database.instance().clear_cook_history(recipe_name)

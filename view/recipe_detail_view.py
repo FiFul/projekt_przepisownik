@@ -1,18 +1,15 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
 
-from view.calendar_dialog import CalendarDialog
-from view.recipe_form import RecipeForm
+from controller.recipe_controller import RecipeController
 
 
 class RecipeDetailView(QWidget):
-    def __init__(self, main_window, parent_widget, recipe, recipe_controller, calendar_controller):
+    def __init__(self, main_window, parent_widget, recipe):
         super().__init__()
-        self.setWindowTitle("Szczegóły Przepisu")
         self.main_window = main_window
+        self.setWindowTitle("Szczegóły Przepisu")
         self.parent_widget = parent_widget
         self.recipe = recipe
-        self.recipe_controller = recipe_controller
-        self.calendar_controller = calendar_controller
 
         layout = QVBoxLayout()
 
@@ -46,20 +43,16 @@ class RecipeDetailView(QWidget):
         self.setLayout(layout)
 
     def delete_recipe(self):
-        self.recipe_controller.clear_cook_history(self.recipe['name'])
-        self.recipe_controller.delete_recipe(self.recipe)
+        RecipeController.instance().clear_cook_history(self.recipe['name'])
+        RecipeController.instance().delete_recipe(self.recipe)
         self.close_view()
 
     def edit_recipe(self):
+        from view.main_window import MainWindow
         self.main_window.show_edit_recipe(self, self.recipe)
-        #self.form = RecipeForm(self.recipe_controller, recipe=self.recipe)
-        #self.form.show()
-        #self.close()
 
     def open_calendar(self):
         self.main_window.show_calendar_dialog(self, self.recipe)
-        #dialog = CalendarDialog(self, self.calendar_controller, self.recipe['name'])
-        #dialog.exec_()
 
     def close_view(self):
         self.main_window.stack.setCurrentWidget(self.parent_widget)

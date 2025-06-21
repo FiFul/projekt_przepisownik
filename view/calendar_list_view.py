@@ -1,21 +1,22 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QListWidget, QPushButton, QMessageBox
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QListWidget, QPushButton
 from datetime import date
 
+from controller.calendar_controller import CalendarController
+from controller.recipe_controller import RecipeController
+
+
 class CalendarListView(QWidget):
-    def __init__(self, main_window, recipe_controller, calendar_controller):
+    def __init__(self, main_window):
         super().__init__()
-        self.setWindowTitle("Kalendarz gotowania")
         self.main_window = main_window
-        self.recipe_controller = recipe_controller
-        self.calendar_controller = calendar_controller
+        self.setWindowTitle("Kalendarz gotowania")
 
         self.layout = QVBoxLayout()
         self.recipe_list = QListWidget()
         self.layout.addWidget(self.recipe_list)
 
         self.refresh_button = QPushButton("Odśwież")
-        self.refresh_button.clicked.connect(self.display_recipes)
+        self.refresh_button.clicked.connect(self.refresh_view)
         self.layout.addWidget(self.refresh_button)
 
         self.recipe_list.itemDoubleClicked.connect(self.open_selected_recipe)
@@ -25,10 +26,10 @@ class CalendarListView(QWidget):
 
     def display_recipes(self):
         self.recipe_list.clear()
-        recipes = self.recipe_controller.get_recipes()
+        recipes = RecipeController.instance().get_recipes()
         for recipe in recipes:
             name = recipe.get("name", "Brak nazwy")
-            history = self.calendar_controller.get_history(name)
+            history = CalendarController.instance().get_history(name)
 
             if history:
                 last_date = max(entry.cook_date for entry in history)
@@ -41,16 +42,8 @@ class CalendarListView(QWidget):
 
     def open_selected_recipe(self, item):
         text = item.text().split(" — ")[0]  # Nazwa przepisu
-        recipe = next((r for r in self.recipe_controller.get_recipes() if r["name"] == text), None)
-        if recipe:
-            from view.recipe_detail_view import RecipeDetailView
-            self.detail_view = RecipeDetailView(
-                self, # obecny widget jako parent_widget
-                self.main_window,  # referencja do MainWindow
-                recipe,
-                self.recipe_controller,
-                self.calendar_controller
-            )
-            self.detail_view.show()
-        else:
-            QMessageBox.warning(self, "Błąd", "Nie znaleziono przepisu.")
+        recipe = RecipeController.instance().get_recipe_by_title(text)
+        self.main_window.show_recipe_detail(self, recipe)
+
+    def refresh_view(self):
+        self.display_recipes()

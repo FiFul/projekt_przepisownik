@@ -1,14 +1,14 @@
 from model.database import Database
+from model.singleton_class import SingletonClass
 
-class RecipeController:
-    def __init__(self, db: Database):
-        self.db = db
+
+class RecipeController(SingletonClass):
 
     def get_recipes(self):
-        return self.db.get_all_recipes()
+        return Database.instance().get_all_recipes()
 
     def get_recipe_by_title(self, name):
-        return self.db.get_recipe_by_title(name)
+        return Database.instance().get_recipe_by_title(name)
 
     def add_recipe(self, name, ingredients, instructions, tags):
         recipe = {
@@ -18,13 +18,13 @@ class RecipeController:
             "tags": tags,
             "image_path": ""  # lub obsłuż opcjonalnie
         }
-        self.db.add_recipe(recipe)
+        Database.instance().add_recipe(recipe)
 
     def delete_recipe(self, recipe):
-        self.db.delete_recipe(recipe)
+        Database.instance().delete_recipe(recipe)
 
     def filter_recipes_by_tag(self, tag):
-        return self.db.filter_recipes_by_tag(tag)
+        return Database.instance().filter_recipes_by_tag(tag)
 
     def get_all_tags(self):
         return list({tag for recipe in self.get_recipes() for tag in recipe["tags"]})
@@ -46,4 +46,4 @@ class RecipeController:
         original_recipe["tags"] = updated["tags"]
 
     def clear_cook_history(self, recipe):
-        self.db.clear_cook_history(recipe)
+        Database.instance().clear_cook_history(recipe)

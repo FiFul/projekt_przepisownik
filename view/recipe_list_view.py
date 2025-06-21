@@ -1,14 +1,12 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QComboBox, QLabel, QHBoxLayout
-from view.recipe_detail_view import RecipeDetailView
-from view.recipe_form import RecipeForm
+
+from controller.recipe_controller import RecipeController
 
 class RecipeListView(QWidget):
-    def __init__(self, main_view, recipe_controller, calendar_controller):
+    def __init__(self, main_window):
         super().__init__()
+        self.main_window = main_window
         self.setWindowTitle("Lista Przepisów")
-        self.main_view = main_view
-        self.recipe_controller = recipe_controller
-        self.calendar_controller = calendar_controller
 
         layout = QVBoxLayout()
 
@@ -47,14 +45,14 @@ class RecipeListView(QWidget):
         self.setLayout(layout)
 
         self.update_filter_options()
-        self.display_recipes(self.recipe_controller.get_recipes())
+        self.display_recipes(RecipeController.instance().get_recipes())
 
     def update_filter_options(self):
         self.tag_filter_box.clear()
         self.ingredient_filter_box.clear()
 
-        tags = self.recipe_controller.get_all_tags()
-        ingredients = self.recipe_controller.get_all_ingredients()
+        tags = RecipeController.instance().get_all_tags()
+        ingredients = RecipeController.instance().get_all_ingredients()
 
         self.tag_filter_box.addItem("")  # Opcja 'brak filtru'
         self.ingredient_filter_box.addItem("")
@@ -66,7 +64,7 @@ class RecipeListView(QWidget):
         selected_tag = self.tag_filter_box.currentText()
         selected_ingredient = self.ingredient_filter_box.currentText()
 
-        recipes = self.recipe_controller.get_recipes()
+        recipes = RecipeController.instance().get_recipes()
 
         if selected_tag:
             recipes = [r for r in recipes if selected_tag in r["tags"]]
@@ -82,7 +80,7 @@ class RecipeListView(QWidget):
         self.ingredient_filter_box.setCurrentIndex(0)
 
         # Pokaż wszystkie przepisy bez filtrów
-        self.display_recipes(self.recipe_controller.get_recipes())
+        self.display_recipes(RecipeController.instance().get_recipes())
 
     def display_recipes(self, recipes):
         self.recipe_list.clear()
@@ -90,15 +88,11 @@ class RecipeListView(QWidget):
             self.recipe_list.addItem(recipe["name"])
 
     def open_selected_recipe(self, item):
-        recipe = self.recipe_controller.get_recipe_by_title(item.text())
-        self.main_view.show_recipe_detail(recipe)
-        #self.detail_view = RecipeDetailView(recipe, self.recipe_controller, self.calendar_controller)
-        #self.detail_view.show()
+        recipe = RecipeController.instance().get_recipe_by_title(item.text())
+        self.main_window.show_recipe_detail(self, recipe)
 
     def add_recipe(self):
-        self.main_view.show_add_recipe(self)
-        #self.recipe_form = RecipeForm(self.recipe_controller)
-        #self.recipe_form.show()
+        self.main_window.show_add_recipe(self)
 
     def refresh_view(self):
-        self.display_recipes(self.recipe_controller.get_recipes())
+        self.display_recipes(RecipeController.instance().get_recipes())

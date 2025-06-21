@@ -1,16 +1,20 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 from collections import Counter
 
+from controller.calendar_controller import CalendarController
+from controller.recipe_controller import RecipeController
+
+
 class StatsView(QWidget):
-    def __init__(self, recipe_controller, calendar_controller):
+    def __init__(self):
         super().__init__()
         self.setWindowTitle("Statystyki")
         layout = QVBoxLayout()
 
-        recipes = recipe_controller.get_recipes()
+        recipes = RecipeController.instance().get_recipes()
         history = []
         for r in recipes:
-            history.extend(calendar_controller.get_history(r["name"]))
+            history.extend(CalendarController.instance().get_history(r["name"]))
 
         layout.addWidget(QLabel(f"Liczba przepisów: {len(recipes)}"))
 
@@ -24,7 +28,7 @@ class StatsView(QWidget):
         else:
             layout.addWidget(QLabel("Brak historii gotowania"))
 
-        tags = recipe_controller.get_all_tags()
+        tags = RecipeController.instance().get_all_tags()
         if tags:
             layout.addWidget(QLabel("Tagi: " + ", ".join(tags)))
         else:

@@ -1,13 +1,12 @@
-from model.recipe import Recipe
 from model.cook_history import CookHistory
-from typing import List
-import datetime
 import json
-import os
+
+from model.singleton_class import SingletonClass
 
 
-class Database:
+class Database(SingletonClass):
     def __init__(self, filename='recipes.json'):
+        super().__init__()
         self.filename = filename
         self.recipes = []
         self.load()

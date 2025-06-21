@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QStackedWidget
 
+from model.database import Database
 from view.calendar_dialog import CalendarDialog
 from view.calendar_list_view import CalendarListView
 from view.recipe_detail_view import RecipeDetailView
@@ -9,12 +10,9 @@ from view.stats_view import StatsView
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, recipe_controller, calendar_controller):
+    def __init__(self):
         super().__init__()
         self.setWindowTitle("Przepisownik")
-
-        self.recipe_controller = recipe_controller
-        self.calendar_controller = calendar_controller
 
         # Główne widgety
         main_widget = QWidget()
@@ -38,13 +36,13 @@ class MainWindow(QMainWindow):
 
         # Prawy panel (dynamiczne widoki)
         self.stack = QStackedWidget()
-        self.recipe_list_view = RecipeListView(self,recipe_controller, self.calendar_controller)
-        self.calendar_list_view = CalendarListView(self, recipe_controller, calendar_controller)
-        self.stats_view = StatsView(recipe_controller, calendar_controller)
+        self.recipe_list_view = RecipeListView(self)
+        self.calendar_list_view = CalendarListView(self)
+        self.stats_view = StatsView()
 
-        self.stack.addWidget(self.recipe_list_view)   # index 0
-        self.stack.addWidget(self.calendar_list_view)      # index 1
-        self.stack.addWidget(self.stats_view)         # index 2
+        self.stack.addWidget(self.recipe_list_view)
+        self.stack.addWidget(self.calendar_list_view)
+        self.stack.addWidget(self.stats_view)
 
         # Połączenie layoutów
         menu_widget = QWidget()
@@ -58,7 +56,7 @@ class MainWindow(QMainWindow):
         self.show_recipes()
 
     def show_recipes(self):
-        self.recipe_list_view.display_recipes(self.recipe_controller.db.recipes)
+        self.recipe_list_view.display_recipes(Database.instance().recipes)
         self.stack.setCurrentWidget(self.recipe_list_view)
 
     def show_calendar(self):
@@ -69,13 +67,13 @@ class MainWindow(QMainWindow):
         self.stats_view.update()
         self.stack.setCurrentWidget(self.stats_view)
 
-    def show_recipe_detail(self, recipe):
-        detail_view = RecipeDetailView(self, self.recipe_list_view, recipe, self.recipe_controller, self.calendar_controller)
+    def show_recipe_detail(self, parent_view, recipe):
+        detail_view = RecipeDetailView(self, parent_view, recipe)
         self.stack.addWidget(detail_view)
         self.stack.setCurrentWidget(detail_view)
 
     def show_edit_recipe(self, parent_widget, recipe):
-        form = RecipeForm(self, parent_widget, recipe, self.recipe_controller)
+        form = RecipeForm(self, parent_widget, recipe)
         self.stack.addWidget(form)
         self.stack.setCurrentWidget(form)
 
@@ -83,12 +81,6 @@ class MainWindow(QMainWindow):
         self.show_edit_recipe(parent_widget, None)
 
     def show_calendar_dialog(self, parent_widget, recipe):
-        dialog = CalendarDialog(self, parent_widget, self.calendar_controller, recipe["name"])
+        dialog = CalendarDialog(self, parent_widget, recipe["name"])
         self.stack.addWidget(dialog)
         self.stack.setCurrentWidget(dialog)
-    def cleanup_views(self):
-        # Usuwa wszystkie widoki poza listą z widgetu stack
-        for i in reversed(range(self.stack.count() - 4)):
-            widget = self.stack.widget(i)
-            self.stack.removeWidget(widget)
-            widget.deleteLater()

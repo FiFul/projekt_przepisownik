@@ -1,12 +1,15 @@
+#todo CZY TA KLASA JEST UZYWANA?
 from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit, QTextEdit, QPushButton,
-    QVBoxLayout, QHBoxLayout, QMessageBox
+    QVBoxLayout, QMessageBox
 )
 
+from controller.recipe_controller import RecipeController
+
+
 class RecipeEditView(QWidget):
-    def __init__(self, recipe_controller):
+    def __init__(self):
         super().__init__()
-        self.recipe_controller = recipe_controller
         self.setWindowTitle("Dodaj przepis")
 
         layout = QVBoxLayout()
@@ -46,7 +49,7 @@ class RecipeEditView(QWidget):
 
 
         try:
-            self.recipe_controller.add_recipe(title, ingredients, instructions, tags)
+            RecipeController.instance().add_recipe(title, ingredients, instructions, tags)
             QMessageBox.information(self, "Sukces", "Przepis zapisany.")
             self.close()
         except Exception as e:

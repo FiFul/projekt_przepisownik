@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QApplication
 import sys
 
+from utils.style_loader import load_stylesheets
 from view.main_window import MainWindow
 from controller.calendar_controller import CalendarController
 from controller.recipe_controller import RecipeController
@@ -14,9 +15,8 @@ def main():
 
     app = QApplication(sys.argv)
 
-    with open("assets/style.qss", "r") as file:
-        style = file.read()
-        app.setStyleSheet(style)
+    style = load_stylesheets()
+    app.setStyleSheet(style)
 
     window = MainWindow()
     window.showFullScreen()

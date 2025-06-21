@@ -8,7 +8,7 @@ class MenuButton(QPushButton):
         self.parent = parent
 
         self.setProperty("class", "menu_button")
-        self.setIcon(QIcon(f"assets/{icon_name}.png"))
+        self.setIcon(QIcon(f"assets/icons/{icon_name}.png"))
         self.setToolTip(tool_tip)
 
     def resizeEvent(self, event):

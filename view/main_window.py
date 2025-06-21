@@ -18,16 +18,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Przepisownik")
 
-        # Główne widgety
-        main_widget = QWidget()
-        main_layout = QHBoxLayout(main_widget)
-
-        # Lewy panel (menu)
+        # menu boczne
         self.menu = QVBoxLayout()
+        self.menu.setSpacing(30)
 
         self.btn_home = MenuButton("icon_home", "Strona Główna")
-
-        self.btn_recipes = MenuButton("icon_recipe_list", "Lista Przepisów")
+        self.btn_recipes = MenuButton("icon_recipe_list1", "Lista Przepisów")
         self.btn_calendar = MenuButton("icon_calendar_list", "Kalendarz")
         self.btn_stats = MenuButton("icon_statistics", "Statystyki")
         self.btn_exit = MenuButton("icon_close", "Zamknij")
@@ -38,12 +34,14 @@ class MainWindow(QMainWindow):
         self.btn_stats.clicked.connect(self.show_stats)
         self.btn_exit.clicked.connect(self.close)
 
-        for btn in [self.btn_home, self.btn_recipes, self.btn_calendar, self.btn_stats]:
-            self.menu.addWidget(btn)
+        self.menu.addWidget(self.btn_home)
+        self.menu.addWidget(self.btn_recipes)
+        self.menu.addWidget(self.btn_calendar)
+        self.menu.addWidget(self.btn_stats)
         self.menu.addStretch()
         self.menu.addWidget(self.btn_exit)
 
-        # Prawy panel (dynamiczne widoki)
+        # wyswietlany widok
         self.stack = QStackedWidget()
         self.homepage_view = HomepageView(self)
         self.recipe_list_view = RecipeListView(self)
@@ -55,7 +53,9 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.calendar_list_view)
         self.stack.addWidget(self.stats_view)
 
-        # Połączenie layoutów
+        # Główne widgety
+        main_widget = QWidget()
+        main_layout = QHBoxLayout(main_widget)
         menu_widget = QWidget()
         menu_widget.setLayout(self.menu)
         menu_widget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -65,10 +65,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(main_widget)
 
         self.show_homepage()
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.showNormal()
 
     def show_homepage(self):
         self.homepage_view.refresh_view()

@@ -1,3 +1,5 @@
+import os
+
 from model.cook_history import CookHistory
 import json
 
@@ -46,6 +48,7 @@ class Database(SingletonClass):
 
     def delete_recipe(self, recipe):
         self.recipes = [r for r in self.recipes if r['name'] != recipe['name']]
+        os.remove(recipe["image_path"])
         self.save()
 
     def filter_recipes_by_tag(self, tag):

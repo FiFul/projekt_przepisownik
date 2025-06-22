@@ -13,24 +13,24 @@ class RecipeTile(QFrame):
         layout = QVBoxLayout()
         self.recipe = recipe
         self.setLayout(layout)
-        self.setFixedSize(200, 200)
-
-        image_label = QLabel()
-        image_label.setAlignment(Qt.AlignCenter)
-        image_label.setFixedHeight(100)  # lub dopasuj dynamicznie
+        self.setFixedSize(250, 200)
 
         image_path = recipe["image_path"]
         if image_path and os.path.exists(image_path):
-            pixmap = QPixmap(image_path).scaled(100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            image_label = QLabel()
+            image_label.setAlignment(Qt.AlignCenter)
+            image_label.setFixedHeight(int(0.75 * self.height()))
+            image_label.setScaledContents(True)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(0)
+            pixmap = QPixmap(image_path).scaled(self.width(), int(0.8 * self.height()), Qt.KeepAspectRatioByExpanding)
             image_label.setPixmap(pixmap)
-        else:
-            image_label.setText("Brak zdjęcia")
-
-        layout.addWidget(image_label)
-
-        name_label = QLabel(recipe['name'])
-        name_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(name_label)
+            layout.addWidget(image_label)
+        title_label = QLabel(recipe['name'])
+        title_label.setWordWrap(True)
+        title_label.setObjectName("titleLabel")
+        title_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title_label)
         self.setCursor(Qt.PointingHandCursor)
 
     def mousePressEvent(self, event):

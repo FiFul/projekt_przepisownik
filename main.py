@@ -1,3 +1,4 @@
+from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtWidgets import QApplication
 import sys
 

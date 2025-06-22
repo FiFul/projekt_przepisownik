@@ -85,6 +85,8 @@ class RecipeForm(QWidget):
         file_name, _ = QFileDialog.getOpenFileName(self, "Wybierz obraz", "", "Obrazy (*.png *.jpg *.jpeg *.bmp)")
         if file_name:
             os.makedirs("data", exist_ok=True)
+            if self.image_path and os.path.exists(self.image_path):
+                os.remove(self.image_path)
             ext = os.path.splitext(file_name)[1]
             new_filename = f"{uuid4().hex}{ext}"
             target_path = os.path.join("data", new_filename)

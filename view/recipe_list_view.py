@@ -48,17 +48,13 @@ class RecipeListView(QWidget):
         self.ingredient_filter_box = QComboBox()
         sidebar.addWidget(self.ingredient_filter_box)
 
-        button_layout = QHBoxLayout()
-
-        self.filter_button = QPushButton("Filtruj")
+        self.filter_button = SidebarButton("Zastosuj filtry")
         self.filter_button.clicked.connect(self.apply_filters)
-        button_layout.addWidget(self.filter_button)
+        sidebar.addWidget(self.filter_button)
 
-        self.clear_button = QPushButton("Wyczyść")
+        self.clear_button = SidebarButton("Wyczyść filtry")
         self.clear_button.clicked.connect(self.clear_filters)
-        button_layout.addWidget(self.clear_button)
-
-        sidebar.addLayout(button_layout)
+        sidebar.addWidget(self.clear_button)
 
         sidebar.addStretch()
 

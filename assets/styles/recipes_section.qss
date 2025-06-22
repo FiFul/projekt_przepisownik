@@ -24,7 +24,7 @@ RecipeTile:hover {
     font-size: 16px;
 }
 SidebarButton {
-    font-family: "JejuGothic";
+    font-family: "Verdana";
     font-size: 16px;
     color: #549B7E;
     font-weight: bold;
@@ -56,4 +56,10 @@ QScrollBar::sub-line:vertical {
 QScrollBar::add-page:vertical,
 QScrollBar::sub-page:vertical {
     background: none;
+}
+#titleInput {
+    border-radius: 30px;
+    font-size: 32px;
+    width: 500px;
+    height: 100px;
 }

@@ -2,8 +2,9 @@ import os
 import shutil
 from uuid import uuid4
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel, QFileDialog
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel, QFileDialog, QHBoxLayout
 
 from controller.recipe_controller import RecipeController
 from view.recipe_detail_view import RecipeDetailView
@@ -22,28 +23,33 @@ class RecipeForm(QWidget):
 
         layout = QVBoxLayout()
 
-        self.title_input = QLineEdit()
-        layout.addWidget(QLabel("Tytuł"))
-        layout.addWidget(self.title_input)
-
-        self.ingredients_input = QTextEdit()
-        layout.addWidget(QLabel("Składniki"))
-        layout.addWidget(self.ingredients_input)
-
-        self.instructions_input = QTextEdit()
-        layout.addWidget(QLabel("Instrukcje"))
-        layout.addWidget(self.instructions_input)
-
-        self.tags_input = QLineEdit()
-        layout.addWidget(QLabel("Tagi"))
-        layout.addWidget(self.tags_input)
+        title_layout = QHBoxLayout()
 
         self.image_label = ClickableLabel("Wybierz zdjęcie")
-        self.image_label.setFixedSize(200, 200)
+        self.image_label.setAlignment(Qt.AlignCenter)
+        self.image_label.setFixedSize(250, 160)
         self.image_label.setStyleSheet("border: 1px solid gray;")
         self.image_label.setScaledContents(True)
         self.image_label.clicked.connect(self.select_image)
-        layout.addWidget(self.image_label)
+        title_layout.addWidget(self.image_label)
+
+        self.title_input = QLineEdit()
+        self.title_input.setObjectName("titleInput")
+        self.title_input.setPlaceholderText("Nazwa przepisu")
+        title_layout.addWidget(self.title_input)
+
+        layout.addLayout(title_layout)
+        self.ingredients_input = QTextEdit()
+        layout.addWidget(QLabel("Składniki:"))
+        layout.addWidget(self.ingredients_input)
+
+        self.instructions_input = QTextEdit()
+        layout.addWidget(QLabel("Instrukcje:"))
+        layout.addWidget(self.instructions_input)
+
+        self.tags_input = QLineEdit()
+        layout.addWidget(QLabel("Tagi:"))
+        layout.addWidget(self.tags_input)
 
         save_button = QPushButton("Zapisz")
         save_button.clicked.connect(self.save_recipe)
@@ -63,8 +69,9 @@ class RecipeForm(QWidget):
             instructions = "\n".join(instructions)
         self.instructions_input.setPlainText(instructions)
         self.image_path = recipe["image_path"]
-        pixmap = QPixmap(self.image_path)
-        self.image_label.setPixmap(pixmap)
+        if self.image_path:
+            pixmap = QPixmap(self.image_path)
+            self.image_label.setPixmap(pixmap)
 
     def save_recipe(self):
         name = self.title_input.text()
@@ -92,7 +99,7 @@ class RecipeForm(QWidget):
             target_path = os.path.join("data", new_filename)
             shutil.copy(file_name, target_path)
             self.image_path = target_path
-            pixmap = QPixmap(self.image_path)
+            pixmap = QPixmap(self.image_path).scaled(self.image_label.width(), self.image_label.height(), Qt.KeepAspectRatioByExpanding)
             self.image_label.setPixmap(pixmap)
     
     def close_view(self):

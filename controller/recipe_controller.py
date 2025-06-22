@@ -11,13 +11,13 @@ class RecipeController(SingletonClass):
     def get_recipe_by_title(self, name):
         return Database.instance().get_recipe_by_title(name)
 
-    def add_recipe(self, name, ingredients, instructions, tags):
+    def add_recipe(self, name, ingredients, instructions, tags, image_path):
         recipe = {
             "name": name,
             "ingredients": ingredients,
             "instructions": instructions,
             "tags": tags,
-            "image_path": ""  # lub obsłuż opcjonalnie
+            "image_path": image_path if image_path else ""
         }
         Database.instance().add_recipe(recipe)
 
@@ -33,8 +33,8 @@ class RecipeController(SingletonClass):
     def get_all_ingredients(self):
         return list({ing for recipe in self.get_recipes() for ing in recipe["ingredients"]})
 
-    def update_recipe(self, original_recipe, name, ingredients, instructions, tags):
-        Database.instance().update_recipe(original_recipe, name, ingredients, instructions, tags)
+    def update_recipe(self, original_recipe, name, ingredients, instructions, tags, image_path):
+        Database.instance().update_recipe(original_recipe, name, ingredients, instructions, tags, image_path)
 
     def clear_cook_history(self, recipe):
         Database.instance().clear_cook_history(recipe)

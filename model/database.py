@@ -35,12 +35,13 @@ class Database(SingletonClass):
                 return recipe
         return None
 
-    def update_recipe(self, recipe, name, ingredients, instructions, tags):
+    def update_recipe(self, recipe, name, ingredients, instructions, tags, image_path):
         id = self.recipes.index(recipe)
         self.recipes[id]["name"] = name
         self.recipes[id]["ingredients"] = ingredients
         self.recipes[id]["instructions"] = instructions
         self.recipes[id]["tags"] = tags
+        self.recipes[id]["image_path"] = image_path if image_path else ""
         self.save()
 
     def delete_recipe(self, recipe):

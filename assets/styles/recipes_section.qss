@@ -3,10 +3,12 @@ background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #CEE9C8, stop:1 #6BC3
 }
 
 RecipeTile {
-    background: rgba(200,56,170,255);
+    background: transparent;
+    border-radius: 10px;
+    border: 2px solid white;
 }
 RecipeTile:hover {
-    background: rgba(200,56,170,128);
+    border-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 #CEE9C8, stop:1 #CEE9C8);
 }
 #scrollArea {
     background-color: transparent;
@@ -15,4 +17,12 @@ RecipeTile:hover {
 
 #gridContainer {
     background-color: transparent;
+}
+SidebarButton {
+    font-family: "JejuGothic";
+    font-size: 16px;
+    color: #549B7E;
+    font-weight: bold;
+    width: 200px;
+    height: 50px;
 }

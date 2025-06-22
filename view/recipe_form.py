@@ -1,7 +1,13 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel
+import os
+import shutil
+from uuid import uuid4
+
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel, QFileDialog
 
 from controller.recipe_controller import RecipeController
 from view.recipe_detail_view import RecipeDetailView
+from view.widgets.clickable_label import ClickableLabel
 
 
 class RecipeForm(QWidget):
@@ -12,6 +18,7 @@ class RecipeForm(QWidget):
         self.parent_widget = parent_widget
         self.editing = recipe is not None
         self.original_recipe = recipe
+        self.image_path = None
 
         layout = QVBoxLayout()
 
@@ -31,6 +38,13 @@ class RecipeForm(QWidget):
         layout.addWidget(QLabel("Tagi"))
         layout.addWidget(self.tags_input)
 
+        self.image_label = ClickableLabel("Wybierz zdjęcie")
+        self.image_label.setFixedSize(200, 200)
+        self.image_label.setStyleSheet("border: 1px solid gray;")
+        self.image_label.setScaledContents(True)
+        self.image_label.clicked.connect(self.select_image)
+        layout.addWidget(self.image_label)
+
         save_button = QPushButton("Zapisz")
         save_button.clicked.connect(self.save_recipe)
         layout.addWidget(save_button)
@@ -48,6 +62,9 @@ class RecipeForm(QWidget):
         if isinstance(instructions, list):
             instructions = "\n".join(instructions)
         self.instructions_input.setPlainText(instructions)
+        self.image_path = recipe["image_path"]
+        pixmap = QPixmap(self.image_path)
+        self.image_label.setPixmap(pixmap)
 
     def save_recipe(self):
         name = self.title_input.text()
@@ -56,16 +73,26 @@ class RecipeForm(QWidget):
         tags = [tag.strip() for tag in self.tags_input.text().split(',')]
 
         if self.editing:
-            RecipeController.instance().update_recipe(
-                self.original_recipe, name, ingredients, instructions, tags
-            )
+            RecipeController.instance().update_recipe(self.original_recipe, name, ingredients, instructions, tags, self.image_path)
             if type(self.parent_widget) is RecipeDetailView:
-                self.parent_widget.update_recipe(name, ingredients, instructions, tags)
+                self.parent_widget.update_recipe(name, ingredients, instructions, tags, self.image_path)
         else:
-            RecipeController.instance().add_recipe(name, ingredients, instructions, tags)
+            RecipeController.instance().add_recipe(name, ingredients, instructions, tags, self.image_path)
 
         self.close_view()
 
+    def select_image(self):
+        file_name, _ = QFileDialog.getOpenFileName(self, "Wybierz obraz", "", "Obrazy (*.png *.jpg *.jpeg *.bmp)")
+        if file_name:
+            os.makedirs("data", exist_ok=True)
+            ext = os.path.splitext(file_name)[1]
+            new_filename = f"{uuid4().hex}{ext}"
+            target_path = os.path.join("data", new_filename)
+            shutil.copy(file_name, target_path)
+            self.image_path = target_path
+            pixmap = QPixmap(self.image_path)
+            self.image_label.setPixmap(pixmap)
+    
     def close_view(self):
         self.main_window.stack.setCurrentWidget(self.parent_widget)
         self.main_window.stack.currentWidget().refresh_view()

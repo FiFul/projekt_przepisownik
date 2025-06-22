@@ -64,8 +64,9 @@ class RecipeDetailView(QWidget):
         self.instructions_label.setText(f"Instrukcje: {self.recipe['instructions']}")
         self.tags_label.setText(f"Tagi: {', '.join(self.recipe['tags'])}")
 
-    def update_recipe(self, name, ingredients, instructions, tags):
+    def update_recipe(self, name, ingredients, instructions, tags, image_path):
         self.recipe['name'] = name
         self.recipe['ingredients'] = ingredients
         self.recipe['instructions'] = instructions
         self.recipe['tags'] = tags
+        self.recipe['image_path'] = image_path if image_path else ""

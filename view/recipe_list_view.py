@@ -3,7 +3,9 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QCom
 
 from controller.recipe_controller import RecipeController
 from utils.style_manager import update_stylesheets
+from view.widgets.menu_button import MenuButton
 from view.widgets.recipe_tile import RecipeTile
+from view.widgets.sidebar_button import SidebarButton
 
 
 class RecipeListView(QWidget):
@@ -17,7 +19,9 @@ class RecipeListView(QWidget):
 
         self.grid_container = QWidget()
         self.grid_layout = QGridLayout(self.grid_container)
-        self.grid_layout.setSpacing(30)
+
+        self.grid_layout.setVerticalSpacing(30)
+        self.grid_layout.setHorizontalSpacing(30)
 
         self.scroll.setWidget(self.grid_container)
 
@@ -28,7 +32,7 @@ class RecipeListView(QWidget):
 
         sidebar = QVBoxLayout()
 
-        self.add_button = QPushButton("Dodaj przepis")
+        self.add_button = SidebarButton("Dodaj przepis")
         self.add_button.clicked.connect(self.add_recipe)
         sidebar.addWidget(self.add_button)
 
@@ -55,6 +59,8 @@ class RecipeListView(QWidget):
         button_layout.addWidget(self.clear_button)
 
         sidebar.addLayout(button_layout)
+
+        sidebar.addStretch()
 
         main_layout.addLayout(sidebar)
         self.refresh_view()
@@ -100,7 +106,7 @@ class RecipeListView(QWidget):
             widget = self.grid_layout.itemAt(i).widget()
             if widget:
                 widget.deleteLater()
-        cols = 4  # Liczba kolumn
+        cols = 6  # Liczba kolumn
         for index, recipe in enumerate(recipes):
             tile = RecipeTile(recipe)
             tile.clicked.connect(self.open_selected_recipe)

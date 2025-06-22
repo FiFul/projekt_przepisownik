@@ -1,3 +1,9 @@
 QMainWindow {
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #FFE5E5, stop:1 #FF7F7C);
 }
+
+RecipeTile {
+    background-color: #FF3333;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}

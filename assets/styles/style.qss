@@ -11,7 +11,7 @@ QPushButton:pressed {
 }
 
 /* Menu boczne */
-QPushButton[class="menu_button"] {
+MenuButton {
     width: 100px;
     height: 100px;
 }

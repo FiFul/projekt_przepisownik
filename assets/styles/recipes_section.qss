@@ -1,3 +1,18 @@
 QMainWindow {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #C6EEBE, stop:1 #81E5BC);
+background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #CEE9C8, stop:1 #3DBC88);
+}
+
+RecipeTile {
+    background: rgba(200,56,170,255);
+}
+RecipeTile:hover {
+    background: rgba(200,56,170,128);
+}
+#scrollArea {
+    background-color: transparent;
+    border: none;
+}
+
+#gridContainer {
+    background-color: transparent;
 }

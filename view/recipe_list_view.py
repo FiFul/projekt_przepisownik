@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QComboBox, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QComboBox, QLabel, QHBoxLayout, QScrollArea, \
+    QGridLayout
 
 from controller.recipe_controller import RecipeController
 from utils.style_manager import update_stylesheets
+from view.widgets.recipe_tile import RecipeTile
 
 
 class RecipeListView(QWidget):
@@ -10,23 +12,37 @@ class RecipeListView(QWidget):
         self.main_window = main_window
         self.setWindowTitle("Lista Przepisów")
 
-        layout = QVBoxLayout()
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+
+        self.grid_container = QWidget()
+        self.grid_layout = QGridLayout(self.grid_container)
+        self.grid_layout.setSpacing(30)
+
+        self.scroll.setWidget(self.grid_container)
+
+        main_layout = QHBoxLayout(self)
+        main_layout.addWidget(self.scroll)
+        self.scroll.setObjectName("scrollArea")
+        self.grid_container.setObjectName("gridContainer")
+
+        sidebar = QVBoxLayout()
 
         self.add_button = QPushButton("Dodaj przepis")
         self.add_button.clicked.connect(self.add_recipe)
-        layout.addWidget(self.add_button)
+        sidebar.addWidget(self.add_button)
 
         self.tag_filter_label = QLabel("Filtruj po tagu:")
-        layout.addWidget(self.tag_filter_label)
+        sidebar.addWidget(self.tag_filter_label)
 
         self.tag_filter_box = QComboBox()
-        layout.addWidget(self.tag_filter_box)
+        sidebar.addWidget(self.tag_filter_box)
 
         self.ingredient_filter_label = QLabel("Filtruj po składniku:")
-        layout.addWidget(self.ingredient_filter_label)
+        sidebar.addWidget(self.ingredient_filter_label)
 
         self.ingredient_filter_box = QComboBox()
-        layout.addWidget(self.ingredient_filter_box)
+        sidebar.addWidget(self.ingredient_filter_box)
 
         button_layout = QHBoxLayout()
 
@@ -38,14 +54,9 @@ class RecipeListView(QWidget):
         self.clear_button.clicked.connect(self.clear_filters)
         button_layout.addWidget(self.clear_button)
 
-        layout.addLayout(button_layout)
+        sidebar.addLayout(button_layout)
 
-        self.recipe_list = QListWidget()
-        self.recipe_list.itemDoubleClicked.connect(self.open_selected_recipe)
-        layout.addWidget(self.recipe_list)
-
-        self.setLayout(layout)
-
+        main_layout.addLayout(sidebar)
         self.refresh_view()
 
     def update_filter_options(self):
@@ -84,12 +95,21 @@ class RecipeListView(QWidget):
         self.display_recipes(RecipeController.instance().get_recipes())
 
     def display_recipes(self, recipes):
-        self.recipe_list.clear()
-        for recipe in recipes:
-            self.recipe_list.addItem(recipe["name"])
+        # Czyść poprzednie widżety
+        for i in reversed(range(self.grid_layout.count())):
+            widget = self.grid_layout.itemAt(i).widget()
+            if widget:
+                widget.deleteLater()
 
-    def open_selected_recipe(self, item):
-        recipe = RecipeController.instance().get_recipe_by_title(item.text())
+        cols = 4  # Liczba kolumn
+        for index, recipe in enumerate(recipes):
+            tile = RecipeTile(recipe)
+            tile.clicked.connect(self.open_selected_recipe)
+            row = index // cols
+            col = index % cols
+            self.grid_layout.addWidget(tile, row, col)
+
+    def open_selected_recipe(self, recipe):
         self.main_window.show_recipe_detail(self, recipe)
 
     def add_recipe(self):

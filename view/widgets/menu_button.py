@@ -6,7 +6,6 @@ class MenuButton(QPushButton):
     def __init__(self, icon_name, tool_tip):
         super().__init__()
 
-        self.setProperty("class", "menu_button")
         self.setIcon(QIcon(f"assets/icons/{icon_name}.png"))
         self.setToolTip(tool_tip)
 

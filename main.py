@@ -17,7 +17,8 @@ def main():
     update_stylesheets()
 
     window = MainWindow()
-    window.showFullScreen()
+    window.showMaximized()
+
 
     sys.exit(app.exec_())
 

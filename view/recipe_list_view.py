@@ -100,7 +100,6 @@ class RecipeListView(QWidget):
             widget = self.grid_layout.itemAt(i).widget()
             if widget:
                 widget.deleteLater()
-
         cols = 4  # Liczba kolumn
         for index, recipe in enumerate(recipes):
             tile = RecipeTile(recipe)

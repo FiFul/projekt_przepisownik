@@ -1,5 +1,5 @@
 QMainWindow {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #CEE9C8, stop:1 #3DBC88);
+background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #CEE9C8, stop:1 #6BC39F);
 }
 
 RecipeTile {

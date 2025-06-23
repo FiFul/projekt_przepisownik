@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushBut
 from controller.recipe_controller import RecipeController
 from view.recipe_detail_view import RecipeDetailView
 from view.widgets.clickable_label import ClickableLabel
+from view.widgets.return_button import ReturnButton
 from view.widgets.sidebar_button import SidebarButton
 
 
@@ -27,15 +28,7 @@ class RecipeForm(QWidget):
         title_layout = QHBoxLayout()
         title_layout.setSpacing(50)
 
-        size=50
-        btn_back = QPushButton()
-        btn_back.setIcon(QIcon(f"assets/icons/icon_arrow_back.png"))
-        btn_back.setIconSize(QSize(size, size))
-        btn_back.setToolTip("Powrót")
-        btn_back.setCursor(Qt.PointingHandCursor)
-        btn_back.clicked.connect(self.close_view)
-        btn_back.setFixedSize(QSize(size, size))
-        btn_back.setStyleSheet("QPushButton {background: transparent;}")
+        btn_back = ReturnButton(self.close_view)
         layout.addWidget(btn_back)
 
         self.image_label = ClickableLabel("Wybierz zdjęcie")
@@ -72,7 +65,7 @@ class RecipeForm(QWidget):
         layout.addWidget(self.tags_input)
 
         btn_save = SidebarButton("Zapisz")
-        btn_save.setFixedSize(QSize(200, size))
+        btn_save.setFixedSize(QSize(200, 50))
         btn_save.clicked.connect(self.save_recipe)
         layout.addWidget(btn_save)
 

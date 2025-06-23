@@ -41,3 +41,6 @@ class RecipeController(SingletonClass):
 
     def get_random_recipe(self):
         return Database.instance().get_random_recipe()
+
+    def apply_filters(self, ingredients, tags):
+        return Database.instance().apply_filters(ingredients, tags)

@@ -110,3 +110,12 @@ class Database(SingletonClass):
 
     def get_random_recipe(self):
         return random.choice(self.recipes)
+
+    def apply_filters(self, ingredients, tags):
+        recipes = self.recipes
+        if tags:
+            recipes = [r for r in recipes if tags in r["tags"]]
+
+        if ingredients:
+            recipes = [r for r in recipes if ingredients in r["ingredients"]]
+        return recipes

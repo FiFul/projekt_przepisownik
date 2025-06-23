@@ -38,11 +38,11 @@ class RecipeListView(QWidget):
 
         sidebar.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        self.tag_filter_box = QComboBox()
-        sidebar.addWidget(self.tag_filter_box)
-
         self.ingredient_filter_box = QComboBox()
         sidebar.addWidget(self.ingredient_filter_box)
+
+        self.tag_filter_box = QComboBox()
+        sidebar.addWidget(self.tag_filter_box)
 
         self.filter_button = SidebarButton("Zastosuj filtry")
         self.filter_button.clicked.connect(self.apply_filters)
@@ -64,25 +64,25 @@ class RecipeListView(QWidget):
         tags = RecipeController.instance().get_all_tags()
         ingredients = RecipeController.instance().get_all_ingredients()
 
-        self.tag_filter_box.addItem("Wybierz filtr tagu")
         self.ingredient_filter_box.addItem("Wybierz filtr składnika")
-        self.tag_filter_box.model().item(0).setEnabled(False)
+        self.tag_filter_box.addItem("Wybierz filtr tagu")
         self.ingredient_filter_box.model().item(0).setEnabled(False)
+        self.tag_filter_box.model().item(0).setEnabled(False)
 
-        self.tag_filter_box.addItems(sorted(tags))
         self.ingredient_filter_box.addItems(sorted(ingredients))
+        self.tag_filter_box.addItems(sorted(tags))
 
     def apply_filters(self):
-        selected_tag = self.tag_filter_box.currentText()
         selected_ingredient = self.ingredient_filter_box.currentText()
+        selected_tag = self.tag_filter_box.currentText()
 
-        recipes = RecipeController.instance().get_recipes()
+        if selected_ingredient == "Wybierz filtr składnika":
+            selected_ingredient = ""
 
-        if selected_tag:
-            recipes = [r for r in recipes if selected_tag in r["tags"]]
+        if selected_tag == "Wybierz filtr tagu":
+            selected_tag = ""
 
-        if selected_ingredient:
-            recipes = [r for r in recipes if selected_ingredient in r["ingredients"]]
+        recipes = RecipeController.instance().apply_filters(selected_ingredient, selected_tag)
 
         self.display_recipes(recipes)
 

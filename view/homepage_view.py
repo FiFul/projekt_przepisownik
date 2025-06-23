@@ -78,6 +78,7 @@ class HomepageView(QWidget):
 
     def refresh_view(self):
         update_stylesheets("home_section")
+
         self.image_path = self.recipe_of_the_day["image_path"]
         if self.image_path:
             pixmap = QPixmap(self.image_path)

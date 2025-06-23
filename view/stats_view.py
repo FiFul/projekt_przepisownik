@@ -4,6 +4,7 @@ from datetime import date, datetime, timedelta
 
 from controller.calendar_controller import CalendarController
 from controller.recipe_controller import RecipeController
+from utils.clear_layout import clear_layout
 from utils.style_manager import update_stylesheets
 
 
@@ -16,11 +17,12 @@ class StatsView(QWidget):
         self.build_stats()
 
     def build_stats(self):
-        self.layout.addWidget(self.section_summary())
-        self.layout.addWidget(self.section_activity())
+        clear_layout(self.layout)
+        self.layout.addWidget(self.build_section_summary())
+        self.layout.addWidget(self.build_section_activity())
 
 
-    def section_summary(self):
+    def build_section_summary(self):
         box = QGroupBox("Podsumowanie")
         layout = QVBoxLayout()
         recipes = RecipeController.instance().get_recipes()
@@ -53,7 +55,7 @@ class StatsView(QWidget):
         box.setLayout(layout)
         return box
 
-    def section_activity(self):
+    def build_section_activity(self):
         box = QGroupBox("Aktywność w czasie")
         layout = QVBoxLayout()
         history = []
@@ -91,5 +93,4 @@ class StatsView(QWidget):
 
     def refresh_view(self):
         update_stylesheets("statistics_section")
-        self.section_summary()
-        self.section_activity()
+        self.build_stats()

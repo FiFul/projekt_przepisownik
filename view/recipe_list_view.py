@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QComboBox, QLabel, QHBoxLayout, QScrollArea, \
-    QGridLayout
+    QGridLayout, QSpacerItem, QSizePolicy
 
 from controller.recipe_controller import RecipeController
 from utils.style_manager import update_stylesheets
@@ -36,14 +36,10 @@ class RecipeListView(QWidget):
         self.add_button.clicked.connect(self.add_recipe)
         sidebar.addWidget(self.add_button)
 
-        self.tag_filter_label = QLabel("Filtruj po tagu:")
-        sidebar.addWidget(self.tag_filter_label)
+        sidebar.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         self.tag_filter_box = QComboBox()
         sidebar.addWidget(self.tag_filter_box)
-
-        self.ingredient_filter_label = QLabel("Filtruj po składniku:")
-        sidebar.addWidget(self.ingredient_filter_label)
 
         self.ingredient_filter_box = QComboBox()
         sidebar.addWidget(self.ingredient_filter_box)
@@ -56,7 +52,7 @@ class RecipeListView(QWidget):
         self.clear_button.clicked.connect(self.clear_filters)
         sidebar.addWidget(self.clear_button)
 
-        sidebar.addStretch()
+        sidebar.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         main_layout.addLayout(sidebar)
         self.refresh_view()
@@ -68,8 +64,10 @@ class RecipeListView(QWidget):
         tags = RecipeController.instance().get_all_tags()
         ingredients = RecipeController.instance().get_all_ingredients()
 
-        self.tag_filter_box.addItem("")  # Opcja 'brak filtru'
-        self.ingredient_filter_box.addItem("")
+        self.tag_filter_box.addItem("Wybierz filtr tagu")
+        self.ingredient_filter_box.addItem("Wybierz filtr składnika")
+        self.tag_filter_box.model().item(0).setEnabled(False)
+        self.ingredient_filter_box.model().item(0).setEnabled(False)
 
         self.tag_filter_box.addItems(sorted(tags))
         self.ingredient_filter_box.addItems(sorted(ingredients))

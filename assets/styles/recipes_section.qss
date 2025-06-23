@@ -26,7 +26,8 @@ RecipeTile:hover {
 SidebarButton {
     font-family: "Verdana";
     font-size: 16px;
-    color: #549B7E;
+    border-radius: 30px;
+    color: #3C705B;
     font-weight: bold;
     width: 200px;
     height: 50px;
@@ -62,4 +63,50 @@ QScrollBar::sub-page:vertical {
     font-size: 32px;
     width: 500px;
     height: 100px;
+    padding: 10px;
+}
+
+QComboBox {
+    font-family: "Verdana";
+    padding: 15px;
+    background: white;
+    border-radius: 20px;
+    height: 25px;
+}
+
+QComboBox:hover {
+    background-color: rgba(255, 255, 255, 128); /* 128/256 w skali widoczności*/
+}
+
+
+QComboBox::drop-down {
+    background: transparent;
+    border: none;
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+}
+
+QComboBox::down-arrow {
+    image: url(assets/icons/icon_arrow_down.png);
+    width: 12px;
+    height: 12px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    selection-background-color: #3C705B;
+    padding: 5px;
+    font-family: "Verdana";
+}
+
+ClickableLabel {
+    font-family: "Verdana";
+    border-radius: 30px;
+}
+
+#formLabel {
+    font-family: "Verdana";
+    font-size: 24px;
+    font-weight: bold;
 }

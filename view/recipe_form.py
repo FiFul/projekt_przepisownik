@@ -2,13 +2,14 @@ import os
 import shutil
 from uuid import uuid4
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel, QFileDialog, QHBoxLayout
 
 from controller.recipe_controller import RecipeController
 from view.recipe_detail_view import RecipeDetailView
 from view.widgets.clickable_label import ClickableLabel
+from view.widgets.sidebar_button import SidebarButton
 
 
 class RecipeForm(QWidget):
@@ -22,8 +23,20 @@ class RecipeForm(QWidget):
         self.image_path = None
 
         layout = QVBoxLayout()
-
+        layout.setSpacing(10)
         title_layout = QHBoxLayout()
+        title_layout.setSpacing(50)
+
+        size=50
+        btn_back = QPushButton()
+        btn_back.setIcon(QIcon(f"assets/icons/icon_arrow_back.png"))
+        btn_back.setIconSize(QSize(size, size))
+        btn_back.setToolTip("Powrót")
+        btn_back.setCursor(Qt.PointingHandCursor)
+        btn_back.clicked.connect(self.close_view)
+        btn_back.setFixedSize(QSize(size, size))
+        btn_back.setStyleSheet("QPushButton {background: transparent;}")
+        layout.addWidget(btn_back)
 
         self.image_label = ClickableLabel("Wybierz zdjęcie")
         self.image_label.setAlignment(Qt.AlignCenter)
@@ -39,21 +52,29 @@ class RecipeForm(QWidget):
         title_layout.addWidget(self.title_input)
 
         layout.addLayout(title_layout)
+
+
+        label_ingr = QLabel("Składniki:")
+        label_inst = QLabel("Instrukcje:")
+        label_tags = QLabel("Tagi:")
+        for l in [label_ingr, label_inst, label_tags]:
+            l.setObjectName("formLabel")
         self.ingredients_input = QTextEdit()
-        layout.addWidget(QLabel("Składniki:"))
+        layout.addWidget(label_ingr)
         layout.addWidget(self.ingredients_input)
 
         self.instructions_input = QTextEdit()
-        layout.addWidget(QLabel("Instrukcje:"))
+        layout.addWidget(label_inst)
         layout.addWidget(self.instructions_input)
 
         self.tags_input = QLineEdit()
-        layout.addWidget(QLabel("Tagi:"))
+        layout.addWidget(label_tags)
         layout.addWidget(self.tags_input)
 
-        save_button = QPushButton("Zapisz")
-        save_button.clicked.connect(self.save_recipe)
-        layout.addWidget(save_button)
+        btn_save = SidebarButton("Zapisz")
+        btn_save.setFixedSize(QSize(200, size))
+        btn_save.clicked.connect(self.save_recipe)
+        layout.addWidget(btn_save)
 
         self.setLayout(layout)
 

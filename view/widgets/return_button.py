@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QPushButton, QGraphicsOpacityEffect
+
 
 class ReturnButton(QPushButton):
     def __init__(self, close_view_connection):
@@ -13,3 +14,14 @@ class ReturnButton(QPushButton):
         self.clicked.connect(close_view_connection)
         self.setFixedSize(QSize(size, size))
         self.setStyleSheet("QPushButton {background: transparent;}")
+        self.effect = QGraphicsOpacityEffect()
+        self.setGraphicsEffect(self.effect)
+        self.effect.setOpacity(1.0)
+
+    def enterEvent(self, event):
+        self.effect.setOpacity(0.5)
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        self.effect.setOpacity(1.0)
+        super().leaveEvent(event)

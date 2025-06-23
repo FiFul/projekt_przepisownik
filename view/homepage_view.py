@@ -54,6 +54,7 @@ class HomepageView(QWidget):
         self.main_content_layout.setSpacing(50)
 
         self.ingredients_title_label = QLabel("Składniki")
+        self.ingredients_title_label.setFixedWidth(250)
         self.ingredients_title_label.setObjectName("sectionTitleLabel")
         self.ingredients_label = QLabel()
         self.ingredients_label.setObjectName("sectionContentLabel")
@@ -67,9 +68,10 @@ class HomepageView(QWidget):
         self.tags_label.setObjectName("sectionContentLabel")
 
         self.layout.addItem(spacer_big)
-
-        self.main_content_layout.addLayout(ContentSection(self.ingredients_title_label, self.ingredients_label))
-        self.main_content_layout.addLayout(ContentSection(self.instructions_title_label, self.instructions_label))
+        self.section_ingredients = ContentSection(self.ingredients_title_label, self.ingredients_label)
+        self.section_instructions = ContentSection(self.instructions_title_label, self.instructions_label)
+        self.main_content_layout.addLayout(self.section_ingredients)
+        self.main_content_layout.addLayout(self.section_instructions)
         self.main_content_layout.addStretch()
         self.layout.addLayout(self.main_content_layout)
         self.layout.addItem(spacer_big)

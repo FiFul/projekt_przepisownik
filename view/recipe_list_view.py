@@ -69,8 +69,8 @@ class RecipeListView(QWidget):
         self.ingredient_filter_box.model().item(0).setEnabled(False)
         self.tag_filter_box.model().item(0).setEnabled(False)
 
-        self.ingredient_filter_box.addItems(sorted(ingredients))
-        self.tag_filter_box.addItems(sorted(tags))
+        self.ingredient_filter_box.addItems(ingredients)
+        self.tag_filter_box.addItems(tags)
 
     def apply_filters(self):
         selected_ingredient = self.ingredient_filter_box.currentText()

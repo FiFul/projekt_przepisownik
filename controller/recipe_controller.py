@@ -27,10 +27,10 @@ class RecipeController(SingletonClass):
         return Database.instance().filter_recipes_by_tag(tag)
 
     def get_all_tags(self):
-        return list({tag for recipe in self.get_recipes() for tag in recipe["tags"]})
+        return Database.instance().get_all_tags()
 
     def get_all_ingredients(self):
-        return list({ing for recipe in self.get_recipes() for ing in recipe["ingredients"]})
+        return Database.instance().get_all_ingredients()
 
     def update_recipe(self, original_recipe, name, ingredients, instructions, tags, image_path):
         Database.instance().update_recipe(original_recipe, name, ingredients, instructions, tags, image_path)

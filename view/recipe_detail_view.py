@@ -88,6 +88,7 @@ class RecipeDetailView(QWidget):
         self.main_content_layout.setSpacing(50)
 
         self.ingredients_title_label = QLabel("Składniki")
+        self.ingredients_title_label.setFixedWidth(250)
         self.ingredients_title_label.setObjectName("sectionTitleLabel")
         self.ingredients_label = QLabel()
         self.ingredients_label.setObjectName("sectionContentLabel")

@@ -58,7 +58,14 @@ class Database(SingletonClass):
         self.save()
 
     def get_all_tags(self):
-        return list({tag for recipe in self.recipes for tag in recipe.get("tags", [])})
+        res = list({tag for recipe in self.recipes for tag in recipe["tags"] if tag})
+        res.sort()
+        return res
+
+    def get_all_ingredients(self):
+        res = list({ing for recipe in self.recipes for ing in recipe["ingredients"] if ing})
+        res.sort()
+        return res
 
     def log_cook_date(self, recipe_name, cook_date):
         try:

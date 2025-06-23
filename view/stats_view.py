@@ -77,7 +77,7 @@ class StatsView(QWidget):
 
             for month in reversed(recent_months):
                 count = monthly_counter.get(month, 0)
-                bar = '█' * int((count / max_val) * 30) if max_val > 0 else ''
+                bar = '█' * int((count / max_val) * 100) if max_val > 0 else ''
                 layout.addWidget(QLabel(f"{month}: {bar} ({count})"))
         else:
             layout.addWidget(QLabel("Brak danych o aktywności"))

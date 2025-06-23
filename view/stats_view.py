@@ -15,7 +15,7 @@ class StatsView(QWidget):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-        self.title1 = QLabel("Podsumowanie")
+        self.title1 = QLabel("Statystyki gotowania")
         self.title1.setObjectName("statsSectionTitle")
         self.title2 = QLabel("Aktywność w czasie")
         self.title2.setObjectName("statsSectionTitle")

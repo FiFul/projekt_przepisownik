@@ -159,13 +159,10 @@ class Database(SingletonClass):
         weekday_counter = Counter(weekdays)
         common_day = weekday_counter.most_common(1)[0]
 
-
-        # Oblicz ostatnie 6 miesięcy
         today = datetime.today()
         recent_months = [(today.replace(day=1) - timedelta(days=30 * i)).strftime('%Y-%m') for i in
                          reversed(range(6))]
 
-        # Zlicz liczbę gotowań na miesiąc
         months = reversed([h.cook_date.strftime('%Y-%m') for h in history])
         monthly_counter = Counter(months)
 

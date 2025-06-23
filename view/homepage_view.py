@@ -21,8 +21,8 @@ class HomepageView(QWidget):
 
         self.layout = QVBoxLayout()
         self.header_layout = QHBoxLayout()
-        self.hello_label = QLabel("Witaj, oto twoja propozycja przepisu na dziś!")
-        self.hello_label.setStyleSheet("QLabel {font-family: Verdana; font-size: 36px; font-weight: bold; color: #BC423F;}")
+        self.hello_label = QLabel("\nWitaj, oto twoja propozycja przepisu na dziś!")
+        self.hello_label.setStyleSheet("QLabel {font-family: Verdana; font-size: 36px; font-weight: bold; color: #900E0A;}")
         self.header_layout.addWidget(self.hello_label)
         self.header_layout.addStretch()
         self.new_recipe_button = SidebarButton("Inny przepis")

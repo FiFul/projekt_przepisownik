@@ -118,24 +118,8 @@ class RecipeForm(QWidget):
             target_path = os.path.join("data", new_filename)
             shutil.copy(file_name, target_path)
             self.image_path = target_path
-            pixmap = QPixmap(self.image_path)
-            label_width = self.width()
-            label_height = int(0.75 * self.height())
-
-            pixmap_ratio = pixmap.width() / pixmap.height()
-            label_ratio = label_width / label_height
-
-            if label_ratio > pixmap_ratio:
-                scaled_height = int(pixmap.width() / label_ratio)
-                y_offset = (pixmap.height() - scaled_height) // 2
-                cropped = pixmap.copy(0, y_offset, pixmap.width(), scaled_height)
-            else:
-                scaled_width = int(pixmap.height() * label_ratio)
-                x_offset = (pixmap.width() - scaled_width) // 2
-                cropped = pixmap.copy(x_offset, 0, scaled_width, pixmap.height())
-
-            scaled_pixmap = cropped.scaled(label_width, label_height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-            self.image_label.setPixmap(scaled_pixmap)
+            pixmap = generate_pixmap(self.image_path, self.image_label.width(), self.image_label.height())
+            self.image_label.setPixmap(pixmap)
     
     def close_view(self):
         self.main_window.stack.setCurrentWidget(self.parent_widget)

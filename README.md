@@ -1,91 +1,53 @@
 # Przepisownik
 
-**Przepisownik** to desktopowa aplikacja napisana w Pythonie z użyciem PyQt5, umożliwiająca zarządzanie przepisami kulinarnymi, planowanie ich w kalendarzu oraz analizowanie statystyk gotowania.
+Przepisownik to desktopowa aplikacja kulinarna napisana w Pythonie z wykorzystaniem PyQt5. Umożliwia użytkownikom dodawanie, przeglądanie, filtrowanie i zarządzanie przepisami. Wspiera także dodawanie zdjęć, tagów, historii gotowania oraz analizę statystyk gotowania.
 
 ---
 
 ## Funkcje
 
-- Lista przepisów z filtrowaniem po tagach i składnikach
-- Kalendarz z planowaniem dań na konkretne dni
-- Statystyki gotowania (np. najczęściej gotowane przepisy)
-- Wyszukiwanie przepisów
-- Obsługa obrazów dla przepisów
-- Trwałe przechowywanie danych w JSON (opcjonalnie SQLite)
-- Estetyczny interfejs oparty o StyleSheet (QSS)
-- Ikony i grafika z Figma
+- Dodawanie przepisów wraz z:
+  - nazwą
+  - składnikami
+  - instrukcjami
+  - tagami
+  - zdjęciem
+- Przeglądanie przepisów w postaci kafelków z podglądem zdjęcia
+- Filtrowanie po tagach i wyszukiwanie przepisów
+- Zapisywanie historii gotowania
+- Statystyki gotowania
 
 ---
 
-## 🚀 Uruchamianie
+## Technologie wykorzystane w projekcie
 
-1. **Zainstaluj zależności**:
-
-```bash
-pip install -r requirements.txt
-```
-
-2. **Uruchom aplikację**:
-
-```bash
-python main.py
-```
+- Python 3.10+ | baza danych
+- PyQt5 | frontend
+- JSON | baza danych
+- QSS | style
+- Figma | ikony
+- Pytest | testowanie
+- GitHub | wersjonowanie
+- Pyinstaller | wdrożenie aplikacji
 
 ---
 
-## Budowanie aplikacji
+## Dostęp do repozytorium:
 
-Możesz zbudować plik wykonywalny za pomocą [PyInstaller](https://www.pyinstaller.org/):
-
-```bash
-pyinstaller --onefile --windowed main.py
-```
-
-Plik `.exe` znajdziesz w folderze `dist/`.
-
+   ```bash
+   git clone https://github.com/FiFul/projekt_przepisownik.git
+   ```
 ---
 
-## Struktura katalogów
-```
-projekt_przepisownik/
-├── main.py
-├── model/
-│   ├── database.py
-│   ├── singleton_class.py
-│   └── ...
-├── controller/
-│   ├── recipe_controller.py
-│   └── calendar_controller.py
-├── view/
-│   ├── main_window.py
-│   ├── recipe_list_view.py
-│   ├── calendar_list_view.py
-│   └── ...
-├── assets/
-│   ├── icons/
-│   ├── images/
-│   └── style.qss
-├── data/
-│   └── recipes.json
-└── README.md
-```
+## Uruchamianie:
 
+   ```bash
+   C:\Users\user\PycharmProjects\JS\projekt_przepisownik> py .\main.py
+   ```
 ---
 
-## Style
-Style aplikacji definiowane są w pliku `assets/style.qss`. Przykład:
+## Wdrożenie aplikacji:
 
----
-
-## Dane
-Domyślnie dane zapisywane są w `recipes.json`.
-
----
-
-## Autorzy
-- Filip Andrasz
-- Dominik Gabiś
-
----
-
-Języki skryptowe 2025
+   ```bash
+   pyinstaller --noconfirm --onefile --windowed main.py
+   ```

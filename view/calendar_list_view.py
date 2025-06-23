@@ -3,6 +3,7 @@ from datetime import date
 
 from controller.calendar_controller import CalendarController
 from controller.recipe_controller import RecipeController
+from model.database import Database
 from utils.style_manager import update_stylesheets
 
 
@@ -33,8 +34,7 @@ class CalendarListView(QWidget):
             history = CalendarController.instance().get_history(name)
 
             if history:
-                last_date = max(entry.cook_date for entry in history)
-                days_ago = (date.today() - last_date).days
+                days_ago = Database.instance().days_cooked(name)
                 label = f"{name} — ostatnio {days_ago} dni temu"
             else:
                 label = f"{name} — nigdy nie gotowane"

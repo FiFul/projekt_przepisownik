@@ -76,11 +76,8 @@ class RecipeListView(QWidget):
         selected_ingredient = self.ingredient_filter_box.currentText()
         selected_tag = self.tag_filter_box.currentText()
 
-        if selected_ingredient == "Wybierz filtr składnika":
-            selected_ingredient = ""
-
-        if selected_tag == "Wybierz filtr tagu":
-            selected_tag = ""
+        if selected_ingredient == "Wybierz filtr składnika": selected_ingredient = ""
+        if selected_tag == "Wybierz filtr tagu": selected_tag = ""
 
         recipes = RecipeController.instance().apply_filters(selected_ingredient, selected_tag)
 

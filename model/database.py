@@ -1,7 +1,7 @@
 import os
 import random
 import json
-from datetime import datetime
+from datetime import datetime, date
 from model.cook_history import CookHistory
 from utils.singleton_class import SingletonClass
 
@@ -109,3 +109,9 @@ class Database(SingletonClass):
         if ingredients:
             recipes = [r for r in recipes if ingredients in r.get("ingredients", [])]
         return recipes
+
+    def days_cooked(self, recipe_name):
+        history = self.get_cook_history(recipe_name)
+        last_date = max(entry.cook_date for entry in history)
+        days_ago = (date.today() - last_date).days
+        return days_ago

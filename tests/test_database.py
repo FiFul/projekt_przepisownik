@@ -1,48 +1,95 @@
 from model.database import Database
 
-def test_add_and_load_recipe_from_file():
-    db = Database.instance()
+def test_add_and_get_recipe(temp_database):
+    db = temp_database
     recipe = {
-        "name": "Sernik",
-        "ingredients": ["ser", "jajka"],
-        "instructions": "Piec",
-        "tags": ["deser"],
+        "name": "Testowy Przepis",
+        "ingredients": ["test"],
+        "instructions": "Gotuj",
+        "tags": ["test"],
         "image_path": ""
     }
 
     db.add_recipe(recipe)
-    loaded = db.get_all_recipes()
+    result = db.get_recipe_by_title("Testowy Przepis")
 
-    assert any(r["name"] == "Sernik" for r in loaded)
+    assert result["name"] == "Testowy Przepis"
+    assert result["ingredients"] == ["test"]
+    assert result["instructions"] == "Gotuj"
+    assert result["tags"] == ["test"]
 
-def test_delete_recipe_and_save():
-    db = Database.instance()
-    recipe = {
-        "name": "Kopytka",
-        "ingredients": ["ziemniaki"],
-        "instructions": "Gotuj",
-        "tags": ["obiad"],
+
+def test_update_recipe(temp_database):
+    db = temp_database
+    original = {
+        "name": "Stary Przepis",
+        "ingredients": ["a"],
+        "instructions": "a",
+        "tags": ["a"],
         "image_path": ""
     }
+    db.add_recipe(original)
+    recipe = db.get_recipe_by_title("Stary Przepis")
 
-    db.add_recipe(recipe)
-    db.delete_recipe(recipe)
+    db.update_recipe(recipe, "Nowy Przepis", ["b", "c"], "Nowe instrukcje", ["b"], "path.jpg")
+    updated = db.get_recipe_by_title("Nowy Przepis")
 
-    assert not any(r["name"] == "Kopytka" for r in db.get_all_recipes())
+    assert updated["name"] == "Nowy Przepis"
+    assert updated["ingredients"] == ["b", "c"]
+    assert updated["instructions"] == "Nowe instrukcje"
+    assert updated["tags"] == ["b"]
+    assert updated["image_path"] == "path.jpg"
 
-def test_clear_cook_history():
-    db = Database.instance()
+
+def test_delete_recipe(temp_database):
+    db = temp_database
     recipe = {
-        "name": "Barszcz",
-        "ingredients": ["buraki"],
-        "instructions": "Gotuj",
-        "tags": ["zupa"],
-        "image_path": "",
-        "cook_history": ["2024-01-01", "2024-02-02"]
+        "name": "Do Usunięcia",
+        "ingredients": ["x"],
+        "instructions": "x",
+        "tags": ["x"],
+        "image_path": ""
     }
-
     db.add_recipe(recipe)
-    db.clear_cook_history(recipe)
+    to_delete = db.get_recipe_by_title("Do Usunięcia")
+    db.delete_recipe(to_delete)
 
-    updated = db.get_recipe_by_title("Barszcz")
-    assert updated["cook_history"] == []
+    assert db.get_recipe_by_title("Do Usunięcia") is None
+
+
+def test_filter_by_tag(temp_database):
+    db = temp_database
+    db.add_recipe({"name": "Zupa", "ingredients": [], "instructions": "", "tags": ["obiad"], "image_path": ""})
+    db.add_recipe({"name": "Ciasto", "ingredients": [], "instructions": "", "tags": ["deser"], "image_path": ""})
+
+    filtered = db.filter_recipes_by_tag("deser")
+    assert len(filtered) == 1
+    assert filtered[0]["name"] == "Ciasto"
+
+
+def test_cook_history_logging_and_retrieval(temp_database):
+    db = temp_database
+    recipe_name = "Gotowane"
+    db.add_recipe({"name": recipe_name, "ingredients": [], "instructions": "", "tags": [], "image_path": ""})
+
+    from datetime import date
+    today = date.today()
+    db.log_cook_date(recipe_name, today)
+
+    history = db.get_cook_history(recipe_name)
+    assert len(history) == 1
+    assert history[0].recipe_name == recipe_name
+    assert history[0].cook_date == today
+
+
+def test_clear_cook_history(temp_database):
+    db = temp_database
+    recipe_name = "Z historią"
+    db.add_recipe({"name": recipe_name, "ingredients": [], "instructions": "", "tags": [], "image_path": ""})
+
+    from datetime import date
+    db.log_cook_date(recipe_name, date.today())
+    assert len(db.get_cook_history(recipe_name)) > 0
+
+    db.clear_cook_history(recipe_name)
+    assert db.get_cook_history(recipe_name) == []

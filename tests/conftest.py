@@ -1,19 +1,19 @@
-import os
-import shutil
+import pytest
+import json
 from model.database import Database
 
-TEST_DATA_PATH = "tests/test_data/recipes.json"
+@pytest.fixture
+def temp_database(tmp_path):
+    # Przygotuj osobne pliki
+    recipe_file = tmp_path / "test_recipes.json"
+    cook_history_file = tmp_path / "test_cook_history.json"
 
-@pytest.fixture(autouse=True)
-def setup_test_environment(tmp_path):
-    test_json_path = tmp_path / "recipes.json"
-    os.makedirs(tmp_path, exist_ok=True)
-    test_json_path.write_text("[]")
+    # Stwórz puste pliki
+    recipe_file.write_text("[]", encoding="utf-8")
+    cook_history_file.write_text("[]", encoding="utf-8")
 
-    # Nadpisujemy ścieżkę pliku JSON w Database
+    # Zresetuj singleton i stwórz nową instancję
     Database._instance = None
-    db = Database.instance()
-    db._data_file = str(test_json_path)
-    db._recipes = []
-    yield
-    Database._instance = None  # Reset DB singleton po teście
+    db = Database(str(recipe_file), str(cook_history_file))
+
+    return db

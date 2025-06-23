@@ -1,3 +1,82 @@
 QMainWindow {
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #ECDDC5, stop:1 #E5B181);
 }
+
+QListWidget {
+    background: transparent;
+    border: 0px;
+    padding: 5px;
+    font-family: "Verdana";
+    font-size: 14px;
+}
+
+QListWidget::item {
+    font-family: "Verdana";
+    padding: 10px;
+    border-bottom: 1px solid #BB722E;
+}
+
+QListWidget::item:selected {
+    background-color: #BB722E;
+    color: white;
+}
+SidebarButton {
+    font-family: "Verdana";
+    font-size: 16px;
+    border-radius: 30px;
+    color: #BB722E;
+    font-weight: bold;
+    width: 200px;
+    height: 50px;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background: transparent;
+    width: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background: transparent;
+    width: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #C98F59;
+    min-height: 20px;
+    border-radius: 6px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #BB722E;
+}
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    border: 0px;
+    height: 0px;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    border: 0px;
+    background: none;
+}
+
+ClickableLabel {
+    font-family: "Verdana";
+    border-radius: 30px;
+}
+
+#sectionTitleLabel {
+    font-family: "Verdana";
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#sectionContentLabel {
+    font-family: "Arial";
+    font-size: 16px;
+}

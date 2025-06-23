@@ -7,6 +7,7 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextEdit, QPushButton, QLabel, QFileDialog, QHBoxLayout
 
 from controller.recipe_controller import RecipeController
+from model import recipe
 from view.recipe_detail_view import RecipeDetailView
 from view.widgets.clickable_label import ClickableLabel
 from view.widgets.return_button import ReturnButton
@@ -99,6 +100,9 @@ class RecipeForm(QWidget):
                 self.parent_widget.update_recipe(name, ingredients, instructions, tags, self.image_path)
         else:
             RecipeController.instance().add_recipe(name, ingredients, instructions, tags, self.image_path)
+            detail_view = RecipeDetailView(self.main_window, self.parent_widget, RecipeController.instance().get_recipe_by_title(name))
+            self.main_window.stack.addWidget(detail_view)
+            self.parent_widget = detail_view
 
         self.close_view()
 

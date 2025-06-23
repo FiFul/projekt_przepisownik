@@ -3,6 +3,7 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSpacerItem, QSizePolicy
 
 from controller.recipe_controller import RecipeController
+from utils.pixmap_generator import generate_pixmap
 from view.widgets.clickable_label import ClickableLabel
 from view.widgets.content_section import ContentSection
 from view.widgets.return_button import ReturnButton
@@ -132,7 +133,7 @@ class RecipeDetailView(QWidget):
     def refresh_view(self):
         self.image_path = self.recipe["image_path"]
         if self.image_path:
-            pixmap = QPixmap(self.image_path)
+            pixmap = generate_pixmap(self.image_path, self.image_label.width(), self.image_label.height())
             self.image_label.setPixmap(pixmap)
         self.title_label.setText(self.recipe['name'])
         self.ingredients_label.setText('\n'.join(self.recipe['ingredients']))

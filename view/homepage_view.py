@@ -3,6 +3,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QSpacerItem, QSizePolicy
 
 from controller.recipe_controller import RecipeController
+from utils.pixmap_generator import generate_pixmap
 from utils.style_manager import update_stylesheets
 from view.widgets.clickable_label import ClickableLabel
 from view.widgets.content_section import ContentSection
@@ -86,7 +87,7 @@ class HomepageView(QWidget):
 
         self.image_path = self.recipe_of_the_day["image_path"]
         if self.image_path:
-            pixmap = QPixmap(self.image_path)
+            pixmap = generate_pixmap(self.image_path, self.image_label.width(), self.image_label.height())
             self.image_label.setPixmap(pixmap)
         else:
             self.image_label.setText("Brak zdjęcia")

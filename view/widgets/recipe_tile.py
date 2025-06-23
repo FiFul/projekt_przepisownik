@@ -4,6 +4,8 @@ from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QFrame
 
+from utils.pixmap_generator import generate_pixmap
+
 
 class RecipeTile(QFrame):
     clicked = pyqtSignal(dict)
@@ -23,7 +25,7 @@ class RecipeTile(QFrame):
             image_label.setScaledContents(True)
             layout.setContentsMargins(0, 0, 0, 0)
             layout.setSpacing(0)
-            pixmap = QPixmap(image_path).scaled(self.width(), int(0.8 * self.height()), Qt.KeepAspectRatioByExpanding)
+            pixmap = generate_pixmap(image_path, self.width(), int(0.75 * self.height()))
             image_label.setPixmap(pixmap)
             layout.addWidget(image_label)
         title_label = QLabel(recipe['name'])

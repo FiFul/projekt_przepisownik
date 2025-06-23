@@ -1,3 +1,23 @@
 QMainWindow {
 background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #C6E8FF, stop:1 #9C7AEC);
 }
+
+QGroupBox {
+    border: 2px solid #6F54B0;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+QGroupBox QLabel {
+    font-size: 16px;
+    color: #1A1A1A;
+    font-size: 11pt;
+}
+
+#statsSectionTitle {
+    font-family: "Verdana";
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 50px;
+    color: #310D88;
+}

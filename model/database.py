@@ -5,6 +5,8 @@ from collections import Counter
 from datetime import datetime, date, timedelta
 from model.cook_history import CookHistory
 from utils.singleton_class import SingletonClass
+from utils.translator import translate_day_to_polish
+
 
 class Database(SingletonClass):
     def __init__(self, recipe_file='data/recipes.json', cook_history_file='data/cook_history.json'):
@@ -163,4 +165,4 @@ class Database(SingletonClass):
         max_val = max([monthly_counter[m] for m in recent_months if m in monthly_counter], default=1)
 
 
-        return common_day, recent_months, monthly_counter, max_val
+        return translate_day_to_polish(common_day[0]), recent_months, monthly_counter, max_val

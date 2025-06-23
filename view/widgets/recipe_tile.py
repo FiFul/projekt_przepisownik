@@ -25,7 +25,7 @@ class RecipeTile(QFrame):
             image_label.setScaledContents(True)
             layout.setContentsMargins(0, 0, 0, 0)
             layout.setSpacing(0)
-            pixmap = generate_pixmap(image_path, self.width(), int(0.75 * self.height()))
+            pixmap = generate_pixmap(image_path, self.width(), int(0.75 * self.height()), 10)
             image_label.setPixmap(pixmap)
             layout.addWidget(image_label)
         title_label = QLabel(recipe['name'])

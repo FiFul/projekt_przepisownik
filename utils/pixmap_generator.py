@@ -1,8 +1,8 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QPainter, QBrush, QPainterPath
 
 
-def generate_pixmap(filepath, width, height):
+def generate_pixmap(filepath, width, height, border_radius=30):
     pixmap = QPixmap(filepath)
 
     pixmap_ratio = pixmap.width() / pixmap.height()
@@ -18,4 +18,19 @@ def generate_pixmap(filepath, width, height):
         cropped = pixmap.copy(x_offset, 0, scaled_width, pixmap.height())
 
     scaled_pixmap = cropped.scaled(width, height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-    return scaled_pixmap
+    return rounded_pixmap(scaled_pixmap, border_radius)
+
+def rounded_pixmap(pixmap: QPixmap, radius: int):
+    size = pixmap.size()
+    rounded = QPixmap(size)
+    rounded.fill(Qt.transparent)
+
+    painter = QPainter(rounded)
+    painter.setRenderHint(QPainter.Antialiasing)
+    path = QPainterPath()
+    path.addRoundedRect(0, 0, size.width(), size.height(), radius, radius)
+    painter.setClipPath(path)
+    painter.drawPixmap(0, 0, pixmap)
+    painter.end()
+
+    return rounded

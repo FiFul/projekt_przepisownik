@@ -66,6 +66,26 @@ def test_filter_by_tag(temp_database):
     assert len(filtered) == 1
     assert filtered[0]["name"] == "Ciasto"
 
+def test_filter_by_ingredient(temp_database):
+    db = temp_database
+    db.add_recipe({"name": "Zupa", "ingredients": [], "instructions": "", "tags": ["obiad"], "image_path": ""})
+    db.add_recipe({"name": "Ciasto", "ingredients": ["jajka", "cukier", "mąka"], "instructions": "", "tags": ["deser"], "image_path": ""})
+
+    filtered = db.apply_filters("mąka", "")
+    assert len(filtered) == 1
+    assert filtered[0]["name"] == "Ciasto"
+
+def test_filter_by_both(temp_database):
+    db = temp_database
+    db.add_recipe({"name": "Zupa", "ingredients": ["woda"], "instructions": "", "tags": ["obiad"], "image_path": ""})
+    db.add_recipe({"name": "Rosół", "ingredients": ["woda","kura"], "instructions": "", "tags": ["obiad"], "image_path": ""})
+    db.add_recipe({"name": "Ciasto", "ingredients": ["jajka", "cukier", "mąka"], "instructions": "", "tags": ["deser"], "image_path": ""})
+
+
+    filtered = db.apply_filters("woda", "obiad")
+    assert len(filtered) == 2
+    assert filtered[0]["name"] == "Rosół"
+    assert filtered[1]["name"] == "Zupa"
 
 def test_cook_history_logging_and_retrieval(temp_database):
     db = temp_database

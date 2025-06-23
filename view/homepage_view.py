@@ -19,12 +19,17 @@ class HomepageView(QWidget):
         spacer_big = QSpacerItem(0, 50, QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.layout = QVBoxLayout()
-        self.layout.addWidget(QLabel("Witaj, oto twoja propozycja przepisu na dziś!"))
-
+        self.header_layout = QHBoxLayout()
+        self.hello_label = QLabel("Witaj, oto twoja propozycja przepisu na dziś!")
+        self.hello_label.setStyleSheet("QLabel {font-family: Verdana; font-size: 36px; font-weight: bold; color: #BC423F;}")
+        self.header_layout.addWidget(self.hello_label)
+        self.header_layout.addStretch()
         self.new_recipe_button = SidebarButton("Inny przepis")
         self.new_recipe_button.clicked.connect(self.get_random_recipe)
-        self.layout.addWidget(self.new_recipe_button)
+        self.header_layout.addWidget(self.new_recipe_button)
 
+        self.layout.addLayout(self.header_layout)
+        self.layout.addItem(spacer_big)
         self.title_layout = QHBoxLayout()
         self.title_layout.setSpacing(50)
 

@@ -43,3 +43,6 @@ class RecipeController(SingletonClass):
 
     def apply_filters(self, ingredients, tags):
         return Database.instance().apply_filters(ingredients, tags)
+
+    def history_stats(self):
+        return Database.instance().history_stats()

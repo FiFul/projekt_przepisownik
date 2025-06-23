@@ -11,3 +11,9 @@ class CalendarController(SingletonClass):
 
     def clear_history(self, recipe_name: str):
         Database.instance().clear_cook_history(recipe_name)
+
+    def last_cook(self):
+        return Database.instance().last_cooked()
+
+    def activity_in_time(self):
+        return Database.instance().activity_in_time()

@@ -34,20 +34,15 @@ class StatsView(QWidget):
         layout.addWidget(QLabel(f"Liczba przepisów: {len(recipes)}"))
 
         if history:
-            count = Counter([h.recipe_name for h in history])
-            most_common = count.most_common(1)[0]
-            least_common = count.most_common()[-1]
-            avg = sum(count.values()) / len(count)
+            most_common, least_common, avg = RecipeController.instance().history_stats()
 
             layout.addWidget(QLabel(f"Najczęściej gotowany przepis: {most_common[0]} ({most_common[1]} razy)"))
             layout.addWidget(QLabel(f"Najrzadziej gotowany przepis: {least_common[0]} ({least_common[1]} razy)"))
             layout.addWidget(QLabel(f"Średnia liczba gotowań na przepis: {avg:.2f}"))
 
-            last_cook = max(h.cook_date for h in history)
-            days_since = (date.today() - last_cook).days
+            days_since, recent = CalendarController.instance().last_cook()
             layout.addWidget(QLabel(f"Ostatnie gotowanie było {days_since} dni temu"))
 
-            recent = sorted(history, key=lambda h: h.cook_date, reverse=True)[0]
             layout.addWidget(QLabel(f"Najnowszy gotowany przepis: {recent.recipe_name} ({recent.cook_date})"))
         else:
             layout.addWidget(QLabel("Brak historii gotowania"))
@@ -64,24 +59,12 @@ class StatsView(QWidget):
             history.extend(CalendarController.instance().get_history(r["name"]))
 
         if history:
-            weekdays = [datetime.combine(h.cook_date, datetime.min.time()).strftime('%A') for h in history]
-            weekday_counter = Counter(weekdays)
-            common_day = weekday_counter.most_common(1)[0]
+            common_day, recent_months, monthly_counter, max_val = CalendarController.instance().activity_in_time()
             layout.addWidget(QLabel(f"Najczęstszy dzień tygodnia gotowania: {common_day[0]}"))
 
-            # Oblicz ostatnie 6 miesięcy
-            today = datetime.today()
-            recent_months = [(today.replace(day=1) - timedelta(days=30 * i)).strftime('%Y-%m') for i in
-                             reversed(range(6))]
-
-            # Zlicz liczbę gotowań na miesiąc
-            months = [h.cook_date.strftime('%Y-%m') for h in history]
-            monthly_counter = Counter(months)
-
             layout.addWidget(QLabel("Gotowania w ostatnich 6 miesiącach:"))
-            max_val = max([monthly_counter[m] for m in recent_months if m in monthly_counter], default=1)
 
-            for month in recent_months:
+            for month in reversed(recent_months):
                 count = monthly_counter.get(month, 0)
                 bar = '█' * int((count / max_val) * 30) if max_val > 0 else ''
                 layout.addWidget(QLabel(f"{month}: {bar} ({count})"))

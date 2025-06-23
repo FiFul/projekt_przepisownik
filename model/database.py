@@ -1,7 +1,8 @@
 import os
 import random
 import json
-from datetime import datetime, date
+from collections import Counter
+from datetime import datetime, date, timedelta
 from model.cook_history import CookHistory
 from utils.singleton_class import SingletonClass
 
@@ -110,3 +111,56 @@ class Database(SingletonClass):
         last_date = max(entry.cook_date for entry in history)
         days_ago = (date.today() - last_date).days
         return days_ago
+
+    def history_stats(self):
+        recipes = self.get_all_recipes()
+        history = []
+
+        for r in recipes:
+            history.extend(self.get_cook_history(r["name"]))
+
+        count = Counter([h.recipe_name for h in history])
+        most_common = count.most_common(1)[0]
+        least_common = count.most_common()[-1]
+        avg = sum(count.values()) / len(count)
+
+        return most_common, least_common, avg
+
+    def last_cooked(self):
+        recipes = self.get_all_recipes()
+        history = []
+
+        for r in recipes:
+            history.extend(self.get_cook_history(r["name"]))
+
+        last_cook = max(h.cook_date for h in history)
+        days_since = (date.today() - last_cook).days
+        recent = sorted(history, key=lambda h: h.cook_date, reverse=True)[0]
+
+        return days_since, recent
+
+    def activity_in_time(self):
+        recipes = self.get_all_recipes()
+        history = []
+
+        for r in recipes:
+            history.extend(self.get_cook_history(r["name"]))
+
+        weekdays = [datetime.combine(h.cook_date, datetime.min.time()).strftime('%A') for h in history]
+        weekday_counter = Counter(weekdays)
+        common_day = weekday_counter.most_common(1)[0]
+
+
+        # Oblicz ostatnie 6 miesięcy
+        today = datetime.today()
+        recent_months = [(today.replace(day=1) - timedelta(days=30 * i)).strftime('%Y-%m') for i in
+                         reversed(range(6))]
+
+        # Zlicz liczbę gotowań na miesiąc
+        months = reversed([h.cook_date.strftime('%Y-%m') for h in history])
+        monthly_counter = Counter(months)
+
+        max_val = max([monthly_counter[m] for m in recent_months if m in monthly_counter], default=1)
+
+
+        return common_day, recent_months, monthly_counter, max_val

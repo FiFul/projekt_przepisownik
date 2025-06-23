@@ -5,8 +5,7 @@ from utils.singleton_class import SingletonClass
 class RecipeController(SingletonClass):
 
     def get_recipes(self):
-        recipes = Database.instance().get_all_recipes()
-        return sorted(recipes, key=lambda recipe: recipe["name"].lower())
+        return  Database.instance().get_all_recipes()
 
     def get_recipe_by_title(self, name):
         return Database.instance().get_recipe_by_title(name)

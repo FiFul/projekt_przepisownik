@@ -29,7 +29,7 @@ class Database(SingletonClass):
         self.save()
 
     def get_all_recipes(self):
-        return self.recipes
+        return sorted(self.recipes, key=lambda recipe: recipe['name'].lower())
 
     def get_recipe_by_title(self, name):
         return next((r for r in self.recipes if r["name"] == name), None)
@@ -82,10 +82,8 @@ class Database(SingletonClass):
         except FileNotFoundError:
             return []
 
-        return [
-            CookHistory(entry["recipe_name"], datetime.fromisoformat(entry["cook_date"]).date())
-            for entry in data if entry["recipe_name"] == recipe_name
-        ]
+        result = [CookHistory(entry["recipe_name"], datetime.fromisoformat(entry["cook_date"]).date()) for entry in data if entry["recipe_name"] == recipe_name]
+        return sorted(result, key=lambda r: r.cook_date, reverse=True)
 
     def clear_cook_history(self, recipe_name):
         try:
@@ -103,7 +101,7 @@ class Database(SingletonClass):
         return random.choice(self.recipes) if self.recipes else None
 
     def apply_filters(self, ingredients, tags):
-        recipes = self.recipes
+        recipes = self.get_all_recipes()
         if tags:
             recipes = [r for r in recipes if tags in r.get("tags", [])]
         if ingredients:

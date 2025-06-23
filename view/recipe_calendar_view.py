@@ -1,9 +1,13 @@
-from PyQt5.QtWidgets import QVBoxLayout, QLabel, QDateEdit, QPushButton, QTextEdit, QMessageBox, QWidget
+from PyQt5.QtGui import QTextCharFormat, QFont, QColor
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QDateEdit, QPushButton, QTextEdit, QMessageBox, QWidget, QHBoxLayout
 from PyQt5.QtCore import QDate
 from datetime import date
 
 from controller.calendar_controller import CalendarController
+from view.widgets.calendar_popup import CalendarPopup
+from view.widgets.content_section import ContentSection
 from view.widgets.return_button import ReturnButton
+from view.widgets.sidebar_button import SidebarButton
 
 
 class RecipeCalendarView(QWidget):
@@ -15,6 +19,7 @@ class RecipeCalendarView(QWidget):
         self.setWindowTitle(f"Kalendarz gotowania - {self.recipe_name}")
 
         layout = QVBoxLayout()
+        layout.setSpacing(50)
 
         self.return_button = ReturnButton(self.close_view)
         layout.addWidget(self.return_button)
@@ -23,31 +28,37 @@ class RecipeCalendarView(QWidget):
         title_label.setStyleSheet("QLabel { background: transparent; font-family: 'Verdana'; font-weight: bold; font-size: 32px;}")
         layout.addWidget(title_label)
 
-        self.date_edit = QDateEdit()
-        self.date_edit.setCalendarPopup(True)
-        self.date_edit.setDate(QDate.currentDate())
-        layout.addWidget(self.date_edit)
+        button_layout = QHBoxLayout()
 
-        save_button = QPushButton("Zapisz gotowanie")
-        save_button.clicked.connect(self.save_cook_date)
-        layout.addWidget(save_button)
+        add_record_button = SidebarButton("Dodaj gotowanie do historii")
+        add_record_button.clicked.connect(self.add_record)
+        button_layout.addWidget(add_record_button)
 
-        clear_button = QPushButton("Wyczyść historię gotowania")
+        clear_button = SidebarButton("Wyczyść historię gotowania")
         clear_button.clicked.connect(self.clear_cook_history)
-        layout.addWidget(clear_button)
+        button_layout.addWidget(clear_button)
 
-        layout.addWidget(QLabel("Historia gotowania:"))
+        layout.addLayout(button_layout)
+        self.history_label = QLabel("Historia gotowania")
+        self.history_label.setStyleSheet("QLabel { background: transparent; font-family: 'Verdana'; font-weight: bold; font-size: 32px;}")
         self.history_box = QTextEdit()
+        fmt = QTextCharFormat()
+        fmt.setFontWeight(QFont.Bold)
+        fmt.setForeground(QColor("blue"))
+        self.history_box.setObjectName("historyBox")
         self.history_box.setReadOnly(True)
-        layout.addWidget(self.history_box)
 
+        layout.addLayout(ContentSection(self.history_label, self.history_box))
         self.setLayout(layout)
         self.update_history()
 
-    def save_cook_date(self):
-        qdate = self.date_edit.date()
-        cook_date = date(qdate.year(), qdate.month(), qdate.day())
-        CalendarController.instance().log_cook(self.recipe_name, cook_date)
+    def add_record(self):
+        dialog = CalendarPopup(self)
+        if dialog.exec_():
+            qdate = dialog.selected_date
+            cook_date = date(qdate.year(), qdate.month(), qdate.day())
+            CalendarController.instance().log_cook(self.recipe_name, cook_date)
+
         self.update_history()
 
     def clear_cook_history(self):

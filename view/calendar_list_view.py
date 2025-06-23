@@ -17,11 +17,7 @@ class CalendarListView(QWidget):
         self.recipe_list = QListWidget()
         self.layout.addWidget(self.recipe_list)
 
-        self.refresh_button = QPushButton("Odśwież")
-        self.refresh_button.clicked.connect(self.refresh_view)
-        self.layout.addWidget(self.refresh_button)
-
-        self.recipe_list.itemDoubleClicked.connect(self.open_selected_recipe)
+        self.recipe_list.itemClicked.connect(self.open_selected_recipe)
         self.setLayout(self.layout)
 
         self.display_recipes()

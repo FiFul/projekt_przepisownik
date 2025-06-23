@@ -16,10 +16,16 @@ QListWidget::item {
     border-bottom: 1px solid #BB722E;
 }
 
+QListWidget::item:hover {
+    background-color: #C98F59;
+}
+
 QListWidget::item:selected {
     background-color: #BB722E;
     color: white;
 }
+
+
 SidebarButton {
     font-family: "Verdana";
     font-size: 16px;

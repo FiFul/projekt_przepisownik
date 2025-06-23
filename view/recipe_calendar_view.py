@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QTextCharFormat, QFont, QColor
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QDateEdit, QPushButton, QTextEdit, QMessageBox, QWidget, QHBoxLayout
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDate, Qt
 from datetime import date
 
 from controller.calendar_controller import CalendarController
@@ -42,13 +42,13 @@ class RecipeCalendarView(QWidget):
         self.history_label = QLabel("Historia gotowania")
         self.history_label.setStyleSheet("QLabel { background: transparent; font-family: 'Verdana'; font-weight: bold; font-size: 32px;}")
         self.history_box = QTextEdit()
-        fmt = QTextCharFormat()
-        fmt.setFontWeight(QFont.Bold)
-        fmt.setForeground(QColor("blue"))
-        self.history_box.setObjectName("historyBox")
+        self.history_box.setFixedWidth(300)
+        self.history_box.setFixedHeight(500)
+        self.history_box.setStyleSheet("QTextEdit {font-family: 'Verdana'; font-size: 20px;}")
         self.history_box.setReadOnly(True)
 
         layout.addLayout(ContentSection(self.history_label, self.history_box))
+        layout.addStretch()
         self.setLayout(layout)
         self.update_history()
 

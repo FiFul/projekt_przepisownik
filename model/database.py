@@ -54,9 +54,6 @@ class Database(SingletonClass):
                 pass
         self.save()
 
-    def filter_recipes_by_tag(self, tag):
-        return [r for r in self.recipes if tag in r.get("tags", [])]
-
     def get_all_tags(self):
         return list({tag for recipe in self.recipes for tag in recipe.get("tags", [])})
 

@@ -62,7 +62,7 @@ def test_filter_by_tag(temp_database):
     db.add_recipe({"name": "Zupa", "ingredients": [], "instructions": "", "tags": ["obiad"], "image_path": ""})
     db.add_recipe({"name": "Ciasto", "ingredients": [], "instructions": "", "tags": ["deser"], "image_path": ""})
 
-    filtered = db.filter_recipes_by_tag("deser")
+    filtered = db.apply_filters("", "deser")
     assert len(filtered) == 1
     assert filtered[0]["name"] == "Ciasto"
 

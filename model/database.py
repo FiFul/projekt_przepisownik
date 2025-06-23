@@ -1,4 +1,5 @@
 import os
+import random
 
 from model.cook_history import CookHistory
 import json
@@ -48,7 +49,8 @@ class Database(SingletonClass):
 
     def delete_recipe(self, recipe):
         self.recipes = [r for r in self.recipes if r['name'] != recipe['name']]
-        os.remove(recipe["image_path"])
+        if recipe["image_path"]:
+            os.remove(recipe["image_path"])
         self.save()
 
     def filter_recipes_by_tag(self, tag):
@@ -105,3 +107,6 @@ class Database(SingletonClass):
 
         with open("data/cook_history.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
+
+    def get_random_recipe(self):
+        return random.choice(self.recipes)

@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QStackedWidget, QSizePolicy
 
 from model.database import Database
-from view.calendar_dialog import CalendarDialog
+from view.recipe_calendar_view import RecipeCalendarView
 from view.calendar_list_view import CalendarListView
 from view.homepage_view import HomepageView
 from view.recipe_detail_view import RecipeDetailView
@@ -96,6 +96,6 @@ class MainWindow(QMainWindow):
         self.show_edit_recipe(parent_widget, None)
 
     def show_calendar_dialog(self, parent_widget, recipe):
-        dialog = CalendarDialog(self, parent_widget, recipe["name"])
+        dialog = RecipeCalendarView(self, parent_widget, recipe["name"])
         self.stack.addWidget(dialog)
         self.stack.setCurrentWidget(dialog)

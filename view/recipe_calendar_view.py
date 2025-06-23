@@ -1,11 +1,12 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QDateEdit, QPushButton, QTextEdit, QMessageBox
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QDateEdit, QPushButton, QTextEdit, QMessageBox, QWidget
 from PyQt5.QtCore import QDate
 from datetime import date
 
 from controller.calendar_controller import CalendarController
+from view.widgets.return_button import ReturnButton
 
 
-class CalendarDialog(QDialog):
+class RecipeCalendarView(QWidget):
     def __init__(self, main_window, parent_widget, recipe_name):
         super().__init__(parent_widget)
         self.main_window = main_window
@@ -15,11 +16,12 @@ class CalendarDialog(QDialog):
 
         layout = QVBoxLayout()
 
-        return_button = QPushButton("Powrót")
-        return_button.clicked.connect(self.close_view)
-        layout.addWidget(return_button)
+        self.return_button = ReturnButton(self.close_view)
+        layout.addWidget(self.return_button)
 
-        layout.addWidget(QLabel(f"Zaznacz datę, kiedy przygotowałeś przepis: {recipe_name}"))
+        title_label = QLabel(f"Kalendarz gotowania przepisu:\n{recipe_name}")
+        title_label.setStyleSheet("QLabel { background: transparent; font-family: 'Verdana'; font-weight: bold; font-size: 32px;}")
+        layout.addWidget(title_label)
 
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)

@@ -38,3 +38,6 @@ class RecipeController(SingletonClass):
 
     def clear_cook_history(self, recipe):
         Database.instance().clear_cook_history(recipe)
+
+    def get_random_recipe(self):
+        return Database.instance().get_random_recipe()

@@ -29,6 +29,7 @@ class RecipeDetailView(QWidget):
         self.button_layout.addWidget(self.return_button)
 
         self.button_layout.addStretch()
+        self.button_layout.setAlignment(Qt.AlignTop)
         self.buttons_size = 100
 
         self.calendar_button = QPushButton()
@@ -77,13 +78,13 @@ class RecipeDetailView(QWidget):
         self.title_layout.addWidget(self.image_label)
 
         self.title_label = QLabel()
-        self.title_label.setStyleSheet("QLabel { background: transparent; font-family: Verdana; font-weight: bold; font-size: 32px;}")
+        self.title_label.setStyleSheet("QLabel { background: transparent; font-family: 'Verdana'; font-weight: bold; font-size: 32px;}")
         self.title_layout.addWidget(self.title_label)
 
         self.layout.addLayout(self.title_layout)
 
         self.main_content_layout = QHBoxLayout()
-        self.main_content_layout.setSpacing(20)
+        self.main_content_layout.setSpacing(50)
 
         self.ingredients_title_label = QLabel("Składniki")
         self.ingredients_title_label.setObjectName("sectionTitleLabel")
@@ -102,12 +103,11 @@ class RecipeDetailView(QWidget):
 
         self.main_content_layout.addLayout(ContentSection(self.ingredients_title_label,self.ingredients_label))
         self.main_content_layout.addLayout(ContentSection(self.instructions_title_label,self.instructions_label))
+        self.main_content_layout.addStretch()
         self.layout.addLayout(self.main_content_layout)
         self.layout.addItem(spacer_big)
 
-        self.layout.addWidget(self.tags_title_label)
-        self.layout.addItem(spacer_small)
-        self.layout.addWidget(self.tags_label)
+        self.layout.addLayout(ContentSection(self.tags_title_label, self.tags_label))
         self.layout.addStretch()
 
         self.setLayout(self.layout)

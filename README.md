@@ -49,5 +49,5 @@ Przepisownik to desktopowa aplikacja kulinarna napisana w Pythonie z wykorzystan
 ## Wdrożenie aplikacji:
 
    ```bash
-   pyinstaller --noconfirm --onefile --windowed main.py
+   pyinstaller --noconfirm --noconsole --onefile --add-data "assets;assets" main.py
    ```
